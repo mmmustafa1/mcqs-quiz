@@ -17,17 +17,14 @@ A versatile application for creating and taking multiple-choice quizzes. This to
 
 1. Clone the repository
 2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Create a `.env` file (copy from `.env.example`) and add your Google API key:
-   ```
-   VITE_GOOGLE_API_KEY="your-api-key-here"
-   ```
-4. Start the development server:
-   ```
-   npm run dev
-   ```
+    ```
+    npm install
+    ```
+3. Start the development server:
+    ```
+    npm run dev
+    ```
+4. To generate MCQs with AI, input your Google Gemini API key in the Gemini API settings section of the application
 
 ## Using Google Gemini AI
 
