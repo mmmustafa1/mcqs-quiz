@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, History, X } from 'lucide-react';
+import { Menu, History, X, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ThemeToggle from './ThemeToggle';
@@ -7,17 +7,26 @@ import ThemeToggle from './ThemeToggle';
 interface MobileNavToggleProps {
   onShowHistory?: () => void;
   showHistoryButton?: boolean;
+  onOpenSettings?: () => void;
 }
 
 const MobileNavToggle: React.FC<MobileNavToggleProps> = ({ 
   onShowHistory,
-  showHistoryButton = false
+  showHistoryButton = false,
+  onOpenSettings
 }) => {
   const [open, setOpen] = useState(false);
 
   const handleHistoryClick = () => {
     if (onShowHistory) {
       onShowHistory();
+      setOpen(false);
+    }
+  };
+
+  const handleSettingsClick = () => {
+    if (onOpenSettings) {
+      onOpenSettings();
       setOpen(false);
     }
   };
@@ -35,6 +44,15 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
           <SheetTitle className="text-left">MCQ Quiz Taker</SheetTitle>
         </SheetHeader>
         <div className="flex flex-col gap-4 py-6">
+          <Button 
+            variant="outline" 
+            onClick={handleSettingsClick}
+            className="justify-start"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Settings
+          </Button>
+          
           {showHistoryButton && (
             <Button 
               variant="outline" 
