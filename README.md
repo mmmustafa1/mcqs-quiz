@@ -24,12 +24,12 @@ A versatile application for creating and taking multiple-choice quizzes. This to
     ```
     npm run dev
     ```
-4. To generate MCQs with AI, input your Google Gemini API key in the Gemini API settings section of the application
+4. To generate MCQs with AI, input your Google Gemini API key in the Gemini API settings.
 
 ## Using Google Gemini AI
 
 1. Obtain a Google AI API key from [Google AI Studio](https://makersuite.google.com/)
-2. Either add it to your `.env` file or paste it directly in the application
+2. ADD your Google Gemini API key in the Gemini API settings
 3. Upload a PDF or text file with educational content
 4. Add optional custom instructions
 5. Click "Generate Questions" to create a quiz
