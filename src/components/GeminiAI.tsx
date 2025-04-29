@@ -381,11 +381,10 @@ Follow these EXACT guidelines:
       addHistoryEntry(0, questions.length, questions, settings);
     }
   };
-
   return (
-    <div className="space-y-8 animate-fade-in">      
-      <h2 className="text-2xl font-semibold text-center text-foreground">Create Quiz with Google AI</h2>
-
+    <div className="space-y-6 sm:space-y-8 animate-fade-in">      
+      <h2 className="text-xl sm:text-2xl font-semibold text-center text-foreground">Create Quiz with Google AI</h2>      
+      
       <Tabs defaultValue="upload" className="w-full">        
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="upload">Upload Documents</TabsTrigger>
@@ -393,15 +392,15 @@ Follow these EXACT guidelines:
           <TabsTrigger value="settings">API Settings</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="upload" className="space-y-4">
+        <TabsContent value="upload" className="space-y-3 sm:space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Upload Documents</CardTitle>              
-              <CardDescription>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Upload Documents</CardTitle>              
+              <CardDescription className="text-xs sm:text-sm">
                 Upload multiple PDF, DOC, DOCX, or TXT files to generate quiz questions
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">              
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">              
               <input
                 type="file"
                 accept=".pdf,.txt,.doc,.docx"
@@ -412,27 +411,27 @@ Follow these EXACT guidelines:
               />
               <Button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full"
+                className="w-full text-xs sm:text-sm h-9 sm:h-10"
                 variant="outline"
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                     Processing Documents...
                   </>
                 ) : (                  
                   <>
-                    <Upload className="mr-2 h-4 w-4" /> Upload Documents (PDF, DOC, TXT)
+                    <Upload className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Upload Documents (PDF, DOC, TXT)
                   </>
                 )}
-              </Button>
-              
+              </Button>              
               {uploadedFiles.length > 0 && !isLoading && (
-                <div className="space-y-2">                  <div className="flex justify-between items-center">
-                    <div className="text-sm font-medium">Documents Uploaded ({uploadedFiles.length})</div>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <div className="text-xs sm:text-sm font-medium">Documents Uploaded ({uploadedFiles.length})</div>
                     {uploadedFiles.length >= 1 && (
-                      <label className="flex items-center space-x-2 text-sm cursor-pointer">
+                      <label className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm cursor-pointer">
                         <input 
                           type="checkbox" 
                           checked={useAllFiles} 
@@ -441,16 +440,16 @@ Follow these EXACT guidelines:
                             // Deselect individual file if we're using all files
                             if (e.target.checked) setSelectedFileIndex(null);
                           }}
-                          className="form-checkbox h-4 w-4 rounded border-gray-300"
+                          className="form-checkbox h-3 w-3 sm:h-4 sm:w-4 rounded border-gray-300"
                         />
                         <span>Use all documents</span>
                       </label>
                     )}
                   </div>
-                  <Alert className="bg-muted/50">
-                    <FileText className="h-4 w-4" />
-                    <AlertTitle>{useAllFiles ? "All Documents Selected" : "Select a Document"}</AlertTitle>
-                    <AlertDescription className={useAllFiles ? "opacity-50" : ""}>
+                  <Alert className="bg-muted/50 p-2 sm:p-4">
+                    <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <AlertTitle className="text-xs sm:text-sm">{useAllFiles ? "All Documents Selected" : "Select a Document"}</AlertTitle>
+                    <AlertDescription className={`text-xs ${useAllFiles ? "opacity-50" : ""}`}>
                       {uploadedFiles.map((file, index) => (
                         <div 
                           key={index} 
@@ -460,7 +459,7 @@ Follow these EXACT guidelines:
                               setUseAllFiles(false);
                             }
                           }} 
-                          className={`cursor-pointer ${!useAllFiles && selectedFileIndex === index ? 'font-bold' : ''} ${useAllFiles ? 'opacity-70' : ''}`}
+                          className={`cursor-pointer truncate ${!useAllFiles && selectedFileIndex === index ? 'font-bold' : ''} ${useAllFiles ? 'opacity-70' : ''}`}
                         >
                           {file.name}
                         </div>
@@ -471,6 +470,7 @@ Follow these EXACT guidelines:
                     <Button 
                       variant="outline" 
                       size="sm"
+                      className="text-xs h-7"
                       onClick={() => {
                         setUploadedFiles([]);
                         setSelectedFileIndex(null);
@@ -483,8 +483,8 @@ Follow these EXACT guidelines:
                 </div>
               )}
               
-              <div className="space-y-2">                
-                <label htmlFor="customInstructions" className="text-sm font-medium">
+              <div className="space-y-1 sm:space-y-2">                
+                <label htmlFor="customInstructions" className="text-xs sm:text-sm font-medium">
                   Custom Instructions (Optional)
                 </label>
                 <Textarea
@@ -492,24 +492,62 @@ Follow these EXACT guidelines:
                   placeholder="Add any specific instructions for the AI quiz generation (e.g., 'Focus on chapter 3', 'Create 10 questions', 'Make easier questions', etc.)"
                   value={customInstructions}
                   onChange={(e) => setCustomInstructions(e.target.value)}
-                  className="min-h-[100px]"
+                  className="min-h-[80px] sm:min-h-[100px] text-xs sm:text-sm"
                 />
               </div>
             </CardContent>
           </Card>
+          
+          {/* Button Row for Upload tab */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <Button
+              onClick={generateQuizQuestions}
+              className="flex-1 sm:flex-none sm:w-48 text-xs sm:text-sm h-9 sm:h-10"
+              disabled={isLoading || !apiKeySaved || (uploadedFiles.length === 0) || (!useAllFiles && selectedFileIndex === null)}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <BrainCircuit className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  Generate Quiz
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleStartQuiz}
+              className="flex-1 sm:flex-none sm:w-48 bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm h-9 sm:h-10"
+              disabled={isLoading || questions.length === 0}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <BookOpen className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  Start Quiz {questions.length > 0 ? `(${questions.length})` : ''}
+                </>
+              )}
+            </Button>
+          </div>
         </TabsContent>
         
-        <TabsContent value="topic" className="space-y-4">
+        <TabsContent value="topic" className="space-y-3 sm:space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Create by Topic</CardTitle>
-              <CardDescription>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Create by Topic</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Generate quiz questions on any topic without uploading a document
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="topic" className="text-sm font-medium">
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+              <div className="space-y-1 sm:space-y-2">
+                <label htmlFor="topic" className="text-xs sm:text-sm font-medium">
                   Topic
                 </label>
                 <Input
@@ -517,17 +555,18 @@ Follow these EXACT guidelines:
                   placeholder="Enter a topic (e.g., 'Solar System', 'World War II', 'JavaScript Basics')"
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
+                  className="text-xs sm:text-sm h-8 sm:h-10"
                 />
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="difficulty" className="text-sm font-medium">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-1 sm:space-y-2">
+                  <label htmlFor="difficulty" className="text-xs sm:text-sm font-medium">
                     Difficulty Level
                   </label>
                   <select
                     id="difficulty"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background 
+                    className="flex h-8 sm:h-10 w-full rounded-md border border-input bg-background px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm ring-offset-background 
                               file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground 
                               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 
                               disabled:cursor-not-allowed disabled:opacity-50"
@@ -541,8 +580,8 @@ Follow these EXACT guidelines:
                   </select>
                 </div>
                 
-                <div className="space-y-2">
-                  <label htmlFor="numberOfQuestions" className="text-sm font-medium">
+                <div className="space-y-1 sm:space-y-2">
+                  <label htmlFor="numberOfQuestions" className="text-xs sm:text-sm font-medium">
                     Number of Questions
                   </label>
                   <Input
@@ -552,12 +591,13 @@ Follow these EXACT guidelines:
                     max="30"
                     value={numberOfQuestions}
                     onChange={(e) => setNumberOfQuestions(parseInt(e.target.value) || 10)}
+                    className="text-xs sm:text-sm h-8 sm:h-10"
                   />
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <label htmlFor="topicInstructions" className="text-sm font-medium">
+              <div className="space-y-1 sm:space-y-2">
+                <label htmlFor="topicInstructions" className="text-xs sm:text-sm font-medium">
                   Custom Instructions (Optional)
                 </label>                
                 <Textarea
@@ -565,42 +605,62 @@ Follow these EXACT guidelines:
                   placeholder="Add any specific instructions for the AI quiz generation (e.g., 'Focus on recent developments', 'Include questions about specific subtopics', etc.)"
                   value={topicInstructions}
                   onChange={(e) => setTopicInstructions(e.target.value)}
-                  className="min-h-[100px]"
+                  className="min-h-[80px] sm:min-h-[100px] text-xs sm:text-sm"
                 />
               </div>
-              
-              <Button
-                onClick={generateQuizByTopic}
-                className="w-full mt-4"
-                disabled={isLoading || !apiKey.trim() || !topic.trim()}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <BrainCircuit className="mr-2 h-4 w-4" />
-                    Generate Quiz on This Topic
-                  </>
-                )}
-              </Button>
             </CardContent>
           </Card>
+          
+          {/* Button Row for Topic tab */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <Button
+              onClick={generateQuizByTopic}
+              className="flex-1 sm:flex-none sm:w-48 text-xs sm:text-sm h-9 sm:h-10"
+              disabled={isLoading || !apiKeySaved || !topic.trim()}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <BrainCircuit className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  Generate Quiz
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleStartQuiz}
+              className="flex-1 sm:flex-none sm:w-48 bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm h-9 sm:h-10"
+              disabled={isLoading || questions.length === 0}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <BookOpen className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  Start Quiz {questions.length > 0 ? `(${questions.length})` : ''}
+                </>
+              )}
+            </Button>
+          </div>
         </TabsContent>
         
         <TabsContent value="settings">
           <Card>
-            <CardHeader>
-              <CardTitle>API Settings</CardTitle>
-              <CardDescription>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">API Settings</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Configure your Google AI (Gemini) settings
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
               <div className="space-y-2">
-                <label htmlFor="apiKey" className="text-sm font-medium">
+                <label htmlFor="apiKey" className="text-xs sm:text-sm font-medium">
                   Google AI API Key
                 </label>
                 <Input
@@ -608,7 +668,11 @@ Follow these EXACT guidelines:
                   type="password"
                   placeholder="Enter your Google AI API key"
                   value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
+                  onChange={(e) => {
+                    setApiKey(e.target.value);
+                    setApiKeySaved(false);
+                  }}
+                  className="text-xs sm:text-sm h-8 sm:h-10"
                 />                
                 <p className="text-xs text-muted-foreground">
                   <Info className="inline-block h-3 w-3 mr-1" />
@@ -616,51 +680,41 @@ Follow these EXACT guidelines:
                 </p>
                 <Button
                   onClick={handleSaveApiKey}
-                  className="mt-2"
+                  className="mt-2 text-xs sm:text-sm h-8 sm:h-10"
                   variant="secondary"
-                  disabled={apiKeySaved}
+                  disabled={!apiKey.trim() || apiKeySaved}
                 >
                   {apiKeySaved ? (
                     <>
-                      <Check className="mr-2 h-4 w-4" />
+                      <Check className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                       API Key Saved
                     </>
                   ) : (
                     <>
-                      <Save className="mr-2 h-4 w-4" />
+                      <Save className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                       Save API Key
                     </>
                   )}
                 </Button>
               </div>
+              
+              <Alert className="bg-muted/50 p-2 sm:p-4 mt-2">
+                <Info className="h-3 w-3 sm:h-4 sm:w-4" />
+                <AlertTitle className="text-xs sm:text-sm">How to get a Google AI API Key</AlertTitle>
+                <AlertDescription className="text-xs">
+                  <ol className="list-decimal pl-4 mt-1 space-y-1">
+                    <li>Go to <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google AI Studio</a></li>
+                    <li>Sign in with your Google account</li>
+                    <li>Navigate to "Get API key" from the top menu</li>
+                    <li>Create a new API key and copy it</li>
+                    <li>Paste it here and click "Save API Key"</li>
+                  </ol>
+                </AlertDescription>
+              </Alert>
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>      
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 border-t border-border">        <Button
-          onClick={generateQuizQuestions}
-          variant="secondary"
-          className="flex-1 sm:flex-none sm:w-48"
-          disabled={isLoading || uploadedFiles.length === 0 || (!useAllFiles && selectedFileIndex === null) || !apiKey.trim()}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            useAllFiles ? 'Generate From Documents' : 'Generate From Selected Document'
-          )}
-        </Button>
-        <Button
-          onClick={handleStartQuiz}
-          className="flex-1 sm:flex-none sm:w-48 bg-primary text-primary-foreground hover:bg-primary/90"
-          disabled={isLoading || questions.length === 0}
-        >
-          Start Quiz {questions.length > 0 ? `(${questions.length})` : ''}
-        </Button>
-      </div>
+      </Tabs>
     </div>
   );
 };
