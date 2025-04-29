@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface QuizData {
   questions: {
@@ -68,11 +68,33 @@ export const QuizProvider = ({ children }: QuizProviderProps) => {
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
   const [quizTitle, setQuizTitle] = useState<string>("");
-  const [settings, setSettings] = useState<QuizSettings>({
-    immediateFeedback: true,
-    shuffleQuestions: false,
-    shuffleOptions: false,
+
+  // Initialize settings from localStorage or use defaults
+  const [settings, setSettings] = useState<QuizSettings>(() => {
+    try {
+      const savedSettings = localStorage.getItem('quizSettings');
+      if (savedSettings) {
+        return JSON.parse(savedSettings);
+      }
+    } catch (error) {
+      console.error("Failed to load quiz settings from localStorage:", error);
+    }
+    // Default settings if nothing in localStorage or parsing fails
+    return {
+      immediateFeedback: true,
+      shuffleQuestions: false,
+      shuffleOptions: false,
+    };
   });
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem('quizSettings', JSON.stringify(settings));
+    } catch (error) {
+      console.error("Failed to save quiz settings to localStorage:", error);
+    }
+  }, [settings]);
 
   // Placeholder for loadQuiz - implement if needed for loading from JSON etc.
   const loadQuiz = (quizData: QuizData) => {
