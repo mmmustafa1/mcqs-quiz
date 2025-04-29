@@ -166,14 +166,14 @@ const GeminiAI = () => {
       // Add the prompt as the first part
       let prompt = `Please create multiple-choice questions (MCQs) based on the content of the uploaded ${filesToProcess.length > 1 ? 'documents' : 'document'}. 
 
-Follow these EXACT guidelines:
+Follow these guidelines:
 1. Format each question in this specific format:
    Q: [Question text]
    A) [Option 1]
       Explanation: [Explanation]
    B) [Option 2]
       Explanation: [Explanation]
-   C) [Option 3]* (the correct can be any option, not just C)
+   C) [Option 3]*
       Explanation: [Explanation]
    D) [Option 4]
       Explanation: [Explanation]
@@ -289,7 +289,7 @@ Follow these EXACT guidelines:
       // Build the prompt
       let prompt = `Please create ${numberOfQuestions} multiple-choice questions (MCQs) on the topic of "${topic}". The difficulty level should be ${difficultyLevel}.
 
-Follow these EXACT guidelines:
+Follow these guidelines:
 1. Format each question in this specific format:
    Q: [Question text]
    A) [Option 1]
