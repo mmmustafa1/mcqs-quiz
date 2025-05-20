@@ -79,7 +79,7 @@ const QuizHistory: React.FC<QuizHistoryProps> = ({ onCloseHistory }) => {
             {historyEntries.map((entry) => (
               <div 
                 key={entry.id} 
-                className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="flex items-center justify-between px-2 py-3 sm:p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="flex-grow cursor-pointer" onClick={() => setSelectedEntryId(entry.id)}>
                   <p className="font-medium">
@@ -89,7 +89,7 @@ const QuizHistory: React.FC<QuizHistoryProps> = ({ onCloseHistory }) => {
                     Taken on: {formatTimestamp(entry.timestamp)}
                   </p>
                 </div>
-                <div className="flex items-center ml-4">
+                <div className="flex items-center ml-2 sm:ml-4">
                    <Button
                     variant="ghost"
                     size="icon"

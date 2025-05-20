@@ -46,10 +46,10 @@ const QuizHistoryDetail: React.FC<QuizHistoryDetailProps> = ({ entry, onBack, on
       </CardHeader>
       <CardContent>
         {/* Score Summary */}
-        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg mb-6">
+        <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 rounded-lg mb-6">
           <div className="text-center">
-            <div className="text-3xl font-bold mb-1">{score.toFixed(1)}%</div>
-            <div className="text-md text-gray-600 dark:text-gray-400">
+            <div className="text-2xl sm:text-3xl font-bold mb-1">{score.toFixed(1)}%</div>
+            <div className="text-sm sm:text-md text-gray-600 dark:text-gray-400">
               Answered {entry.score} out of {entry.totalQuestions} questions correctly
             </div>
           </div>
@@ -65,7 +65,7 @@ const QuizHistoryDetail: React.FC<QuizHistoryDetailProps> = ({ entry, onBack, on
         </div>
 
         {/* Question Review */}
-        <h3 className="text-lg font-semibold mb-3">Question Details</h3>
+        <h3 className="text-base sm:text-lg font-semibold mb-3">Question Details</h3>
         <div className="divide-y divide-gray-200 dark:divide-gray-700 max-h-[400px] overflow-y-auto pr-2">
           {entry.questions.map((question, qIndex) => {
             const selectedOption = question.options[question.userAnswerIndex!];
@@ -73,7 +73,7 @@ const QuizHistoryDetail: React.FC<QuizHistoryDetailProps> = ({ entry, onBack, on
             
             return (
               <div key={qIndex} className="py-4 first:pt-0 last:pb-0">
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                   <div className={cn(
                     "flex items-center justify-center h-5 w-5 rounded-full flex-shrink-0 mt-1",
                     isCorrect ? "bg-quiz-correct" : "bg-quiz-incorrect"
@@ -81,7 +81,7 @@ const QuizHistoryDetail: React.FC<QuizHistoryDetailProps> = ({ entry, onBack, on
                     {isCorrect ? <Check className="text-white h-3 w-3" /> : <X className="text-white h-3 w-3" />}
                   </div>
                   <div>
-                    <h4 className="text-md font-medium mb-2">
+                    <h4 className="text-sm sm:text-md font-medium mb-2">
                       {qIndex + 1}. {question.question}
                     </h4>
                     <div className="space-y-2 ml-1">
@@ -89,7 +89,7 @@ const QuizHistoryDetail: React.FC<QuizHistoryDetailProps> = ({ entry, onBack, on
                         <div 
                           key={oIndex}
                           className={cn(
-                            "p-2 rounded-md border text-sm",
+                            "px-1.5 py-1 sm:p-2 rounded-md border text-xs sm:text-sm",
                             option.isCorrect 
                               ? "border-quiz-correct bg-green-50 dark:bg-green-900/10" 
                               : oIndex === question.userAnswerIndex && !option.isCorrect

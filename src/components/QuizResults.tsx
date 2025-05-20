@@ -142,44 +142,50 @@ const QuizResults = () => {
       <div className="mt-6 sm:mt-8">
         <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Quiz Settings</h2>
         <div className="space-y-4 sm:space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="pr-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <div className="flex-grow">
               <span className="font-medium text-sm sm:text-base">Immediate Feedback</span>
               <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 Show correct/incorrect answers immediately after each question
               </p>
             </div>
-            <Switch
-              id="immediate-feedback-results"
-              checked={settings.immediateFeedback}
-              onCheckedChange={(checked) => updateSettings({ immediateFeedback: checked })}
-            />
+            <div className="flex-shrink-0">
+              <Switch
+                id="immediate-feedback-results"
+                checked={settings.immediateFeedback}
+                onCheckedChange={(checked) => updateSettings({ immediateFeedback: checked })}
+              />
+            </div>
           </div>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <div className="flex-grow">
               <span className="font-medium">Shuffle Questions</span>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Randomize the order of questions
               </p>
             </div>
-            <Switch
-              id="shuffle-questions-results"
-              checked={settings.shuffleQuestions}
-              onCheckedChange={(checked) => handleShuffleSetting('shuffleQuestions', checked)}
-            />
+            <div className="flex-shrink-0">
+              <Switch
+                id="shuffle-questions-results"
+                checked={settings.shuffleQuestions}
+                onCheckedChange={(checked) => handleShuffleSetting('shuffleQuestions', checked)}
+              />
+            </div>
           </div>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <div className="flex-grow">
               <span className="font-medium">Shuffle Options</span>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 Randomize the order of answer choices
               </p>
             </div>
-            <Switch
-              id="shuffle-options-results"
-              checked={settings.shuffleOptions}
-              onCheckedChange={(checked) => handleShuffleSetting('shuffleOptions', checked)}
-            />
+            <div className="flex-shrink-0">
+              <Switch
+                id="shuffle-options-results"
+                checked={settings.shuffleOptions}
+                onCheckedChange={(checked) => handleShuffleSetting('shuffleOptions', checked)}
+              />
+            </div>
           </div>
         </div>
       </div>
