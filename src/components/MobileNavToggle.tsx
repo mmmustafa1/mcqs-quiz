@@ -3,6 +3,8 @@ import { Menu, History, X, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ThemeToggle from './ThemeToggle';
+import { UserProfile } from './UserProfile';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MobileNavToggleProps {
   onShowHistory?: () => void;
@@ -16,6 +18,7 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
   onOpenSettings
 }) => {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
 
   const handleHistoryClick = () => {
     if (onShowHistory) {
@@ -42,9 +45,14 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
       <SheetContent side="left" className="w-[250px] sm:w-[300px]">
         <SheetHeader>
           <SheetTitle className="text-left">MCQ Quiz Taker</SheetTitle>
-        </SheetHeader>
-        <div className="flex flex-col gap-4 py-6">
-          <Button 
+        </SheetHeader>        <div className="flex flex-col gap-4 py-6">
+          {/* Profile Section - Show at top if user is authenticated */}
+          {user && (
+            <div className="pb-4 border-b border-border">
+              <UserProfile />
+            </div>
+          )}
+            <Button 
             variant="outline" 
             onClick={handleSettingsClick}
             className="justify-start"
