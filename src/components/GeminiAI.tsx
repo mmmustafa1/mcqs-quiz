@@ -9,7 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, FileText, Info, Loader2, Save, Check, BookOpen, BrainCircuit } from 'lucide-react';
+import { Upload, FileText, Info, Loader2, Save, Check, BookOpen, BrainCircuit, Settings } from 'lucide-react';
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
 import { supabaseSecureStorage } from '@/lib/supabaseSecureStorage';
 
@@ -458,12 +458,23 @@ Follow these guidelines:
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in">      
       <h2 className="text-xl sm:text-2xl font-semibold text-center text-foreground">Create Quiz with Google AI</h2>      
-      
-      <Tabs defaultValue="upload" className="w-full">        
+        <Tabs defaultValue="upload" className="w-full">        
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="upload">Upload Documents</TabsTrigger>
-          <TabsTrigger value="topic">Create by Topic</TabsTrigger>
-          <TabsTrigger value="settings">API Settings</TabsTrigger>
+          <TabsTrigger value="upload" className="flex items-center justify-center gap-1 sm:gap-2">
+            <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Upload Documents</span>
+            <span className="sm:hidden">Upload</span>
+          </TabsTrigger>
+          <TabsTrigger value="topic" className="flex items-center justify-center gap-1 sm:gap-2">
+            <BrainCircuit className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Create by Topic</span>
+            <span className="sm:hidden">Topic</span>
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center justify-center gap-1 sm:gap-2">
+            <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">API Settings</span>
+            <span className="sm:hidden">Settings</span>
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="upload" className="space-y-3 sm:space-y-4">
