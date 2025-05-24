@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useQuiz } from '@/contexts/QuizContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { AuthForm } from './AuthForm';
+import { UserProfile } from './UserProfile';
 import QuizInput from './QuizInput';
 import GeminiAI from './GeminiAI';
 import QuizQuestion from './QuizQuestion';
@@ -11,11 +14,12 @@ import MobileNavToggle from './MobileNavToggle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { History, FileText, Sparkles, Settings } from 'lucide-react';
+import { History, FileText, Sparkles, Settings, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const QuizApp = () => {
   const { quizStarted, quizFinished, questions } = useQuiz();
+  const { user, loading } = useAuth();
   const [showHistory, setShowHistory] = useState(false); // State for history view
   const [settingsOpen, setSettingsOpen] = useState(false); // State for settings dialog
   
@@ -24,9 +28,51 @@ const QuizApp = () => {
     console.log("Quiz state:", { quizStarted, quizFinished, questionsCount: questions.length });
   }, [quizStarted, quizFinished, questions]);
 
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show authentication form if user is not signed in
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background to-secondary dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+        <div className="absolute top-6 right-6">
+          <ThemeToggle />
+        </div>
+        
+        <div className="w-full max-w-md space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">MCQ Quiz Taker</h1>
+            <p className="text-muted-foreground">
+              Craft and conquer your custom quizzes with secure cloud storage!
+            </p>
+          </div>
+          
+          <AuthForm />
+          
+          <div className="text-center text-xs text-muted-foreground">
+            <p>Sign up to securely store your API keys and access all features</p>
+          </div>
+        </div>
+        
+        <footer className="mt-8 text-center text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} MMM. All rights reserved.</p>
+        </footer>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-background to-secondary dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 relative">
       <div className="absolute top-6 right-6 hidden md:flex items-center gap-2">
+        <UserProfile />
         <Button
           variant="ghost"
           size="icon"

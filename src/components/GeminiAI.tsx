@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuiz } from '@/contexts/QuizContext';
 import { useHistory } from '@/contexts/HistoryContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -10,11 +11,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Upload, FileText, Info, Loader2, Save, Check, BookOpen, BrainCircuit } from 'lucide-react';
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
-import { secureStorage } from '@/lib/secureStorage';
+import { supabaseSecureStorage } from '@/lib/supabaseSecureStorage';
 
 const GeminiAI = () => {  
   const { parseQuestions, startQuiz, questions, setQuizTitle, settings } = useQuiz();
   const { addHistoryEntry, isHistoryEnabled } = useHistory();
+  const { user } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,19 +25,106 @@ const GeminiAI = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [apiKey, setApiKey] = useState('');
   const [apiKeySaved, setApiKeySaved] = useState(false);
+  const [isLoadingApiKey, setIsLoadingApiKey] = useState(false);
   const [topic, setTopic] = useState('');
   const [difficultyLevel, setDifficultyLevel] = useState('medium');
-  const [numberOfQuestions, setNumberOfQuestions] = useState(10);  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
+  const [numberOfQuestions, setNumberOfQuestions] = useState(10);
+  const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
   const [useAllFiles, setUseAllFiles] = useState(true);
 
-  // Load saved API key on component mount
+  // Load saved API key on component mount and when user changes
   useEffect(() => {
-    const savedApiKey = secureStorage.getApiKey();
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-      setApiKeySaved(true);
+    const loadApiKey = async () => {
+      if (!user) {
+        setApiKey('');
+        setApiKeySaved(false);
+        return;
+      }
+
+      setIsLoadingApiKey(true);
+      try {
+        const savedApiKey = await supabaseSecureStorage.getApiKey();
+        if (savedApiKey) {
+          setApiKey(savedApiKey);
+          setApiKeySaved(true);
+        } else {
+          setApiKey('');
+          setApiKeySaved(false);
+        }
+      } catch (error) {
+        console.error('Error loading API key:', error);
+        setApiKey('');
+        setApiKeySaved(false);
+      } finally {
+        setIsLoadingApiKey(false);
+      }
+    };
+
+    loadApiKey();
+  }, [user]);
+
+  // Save API key to Supabase
+  const saveApiKey = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to save your API key securely.",
+        variant: "destructive",
+      });
+      return;
     }
-  }, []);
+
+    if (!apiKey.trim()) {
+      toast({
+        title: "Invalid API Key",
+        description: "Please enter a valid API key.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoadingApiKey(true);
+    try {
+      const result = await supabaseSecureStorage.storeApiKey(apiKey.trim());
+      if (result.success) {
+        setApiKeySaved(true);
+        toast({
+          title: "API Key Saved",
+          description: "Your API key has been saved securely.",
+        });      } else {
+        console.error('Failed to save API key:', result.error);
+        toast({
+          title: "Save Failed",
+          description: result.error || "Failed to save API key.",
+          variant: "destructive",
+        });
+        
+        // Show additional help for common errors
+        if (result.error?.includes('table "secure_settings" does not exist')) {
+          toast({
+            title: "Database Setup Required",
+            description: "Please run the Supabase migration SQL to create the secure_settings table.",
+            variant: "destructive",
+          });
+        } else if (result.error?.includes('Permission denied')) {
+          toast({
+            title: "Permission Error", 
+            description: "Check your Supabase Row Level Security policies.",
+            variant: "destructive",
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error saving API key:', error);
+      toast({
+        title: "Save Failed",
+        description: "An unexpected error occurred while saving your API key.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingApiKey(false);
+    }
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -338,26 +427,9 @@ Follow these guidelines:
       setIsLoading(false);
     }
   };
-
   // Function to save API key securely
-  const handleSaveApiKey = () => {
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your Google AI API key before saving.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Save API key to secure storage
-    secureStorage.saveApiKey(apiKey);
-    setApiKeySaved(true);
-    
-    toast({
-      title: "API Key Saved",
-      description: "Your API key has been securely saved in your browser.",
-    });
+  const handleSaveApiKey = async () => {
+    await saveApiKey();
   };
   
   const handleStartQuiz = () => {
@@ -400,14 +472,14 @@ Follow these guidelines:
                 Upload multiple PDF, DOC, DOCX, or TXT files to generate quiz questions
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">              
-              <input
+            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">                <input
                 type="file"
                 accept=".pdf,.txt,.doc,.docx"
                 ref={fileInputRef}
                 onChange={handleFileUpload}
                 className="hidden"
                 multiple
+                title="Upload documents for quiz generation"
               />
               <Button
                 onClick={() => fileInputRef.current?.click()}
@@ -673,18 +745,25 @@ Follow these guidelines:
                     setApiKeySaved(false);
                   }}
                   className="text-xs sm:text-sm h-8 sm:h-10"
-                />                
-                <p className="text-xs text-muted-foreground">
+                />                  <p className="text-xs text-muted-foreground">
                   <Info className="inline-block h-3 w-3 mr-1" />
-                  Your API key is stored securely in your browser's local storage with light encryption
+                  {user ? 
+                    "Your API key is stored securely in Supabase with encryption" :
+                    "Sign in to store your API key securely in the cloud"
+                  }
                 </p>
                 <Button
                   onClick={handleSaveApiKey}
                   className="mt-2 text-xs sm:text-sm h-8 sm:h-10"
                   variant="secondary"
-                  disabled={!apiKey.trim() || apiKeySaved}
+                  disabled={!apiKey.trim() || apiKeySaved || isLoadingApiKey || !user}
                 >
-                  {apiKeySaved ? (
+                  {isLoadingApiKey ? (
+                    <>
+                      <Loader2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : apiKeySaved ? (
                     <>
                       <Check className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                       API Key Saved
@@ -692,7 +771,7 @@ Follow these guidelines:
                   ) : (
                     <>
                       <Save className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                      Save API Key
+                      {user ? "Save API Key" : "Sign In Required"}
                     </>
                   )}
                 </Button>

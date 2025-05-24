@@ -1,10 +1,12 @@
 import React from 'react';
 import { useQuiz } from '@/contexts/QuizContext';
 import { useHistory } from '@/contexts/HistoryContext'; // Import useHistory
+import { useAuth } from '@/contexts/AuthContext'; // Import useAuth
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Settings, Shield, Info } from 'lucide-react';
 
 interface QuizSettingsProps {
   className?: string;
@@ -17,6 +19,7 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
 }) => {
   const { settings, updateSettings } = useQuiz();
   const { isHistoryEnabled, toggleHistoryEnabled } = useHistory(); // Get history state and toggle function
+  const { user } = useAuth(); // Get authentication state
 
   const settingsContent = (
     <div className={`space-y-4 ${className}`}>
@@ -84,10 +87,27 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
             id="enable-history"
             checked={isHistoryEnabled}
             onCheckedChange={toggleHistoryEnabled} // Use the toggle function from context
-            className="data-[state=checked]:bg-primary"
-          />
+            className="data-[state=checked]:bg-primary"          />
         </div>
       </div>
+
+      {/* Authentication Status Alert */}
+      {user && (
+        <Alert className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
+          <Shield className="h-4 w-4 text-green-600 dark:text-green-400" />
+          <AlertDescription className="text-green-800 dark:text-green-200">
+            <strong>Secure Storage Active:</strong> Your API keys and settings are encrypted and stored securely in the cloud.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {!user && (
+        <Alert className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+          <Info className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <AlertDescription className="text-amber-800 dark:text-amber-200">
+            <strong>Sign in required:</strong> Create an account to securely store your API keys and access advanced features.
+          </AlertDescription>
+        </Alert>      )}
     </div>
   );
 
