@@ -3,6 +3,7 @@ import { useQuiz } from '@/contexts/QuizContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { AuthForm } from './AuthForm';
 import { UserProfile } from './UserProfile';
+import { GuestProfile } from './GuestProfile';
 import QuizInput from './QuizInput';
 import GeminiAI from './GeminiAI';
 import QuizQuestion from './QuizQuestion';
@@ -19,7 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 
 const QuizApp = () => {
   const { quizStarted, quizFinished, questions } = useQuiz();
-  const { user, loading } = useAuth();
+  const { user, loading, isGuest, continueAsGuest } = useAuth();
   const [showHistory, setShowHistory] = useState(false); // State for history view
   const [settingsOpen, setSettingsOpen] = useState(false); // State for settings dialog
   
@@ -39,9 +40,8 @@ const QuizApp = () => {
       </div>
     );
   }
-
-  // Show authentication form if user is not signed in
-  if (!user) {
+  // Show authentication form if user is not signed in and not in guest mode
+  if (!user && !isGuest) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background to-secondary dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div className="absolute top-6 right-6">
@@ -58,8 +58,31 @@ const QuizApp = () => {
           
           <AuthForm />
           
-          <div className="text-center text-xs text-muted-foreground">
+          {/* Continue as Guest Button */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or
+              </span>
+            </div>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            onClick={continueAsGuest}
+            className="w-full"
+          >
+            Continue as Guest
+          </Button>
+          
+          <div className="text-center text-xs text-muted-foreground space-y-1">
             <p>Sign up to securely store your API keys and access all features</p>
+            <p className="text-amber-600 dark:text-amber-400">
+              Guest mode: Data stored locally in your browser only
+            </p>
           </div>
         </div>
         
@@ -70,9 +93,8 @@ const QuizApp = () => {
     );
   }
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-background to-secondary dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 relative">
-      <div className="absolute top-6 right-6 hidden md:flex items-center gap-2">
-        <UserProfile />
+    <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-background to-secondary dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 relative">      <div className="absolute top-6 right-6 hidden md:flex items-center gap-2">
+        {user ? <UserProfile /> : <GuestProfile />}
         <Button
           variant="ghost"
           size="icon"

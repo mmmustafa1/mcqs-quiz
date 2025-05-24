@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ThemeToggle from './ThemeToggle';
 import { UserProfile } from './UserProfile';
+import { GuestProfile } from './GuestProfile';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface MobileNavToggleProps {
@@ -18,7 +19,7 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
   onOpenSettings
 }) => {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
 
   const handleHistoryClick = () => {
     if (onShowHistory) {
@@ -44,15 +45,16 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
       </SheetTrigger>
       <SheetContent side="left" className="w-[250px] sm:w-[300px]">
         <SheetHeader>
-          <SheetTitle className="text-left">MCQ Quiz Taker</SheetTitle>
-        </SheetHeader>        <div className="flex flex-col gap-4 py-6">
-          {/* Profile Section - Show at top if user is authenticated */}
-          {user && (
+          <SheetTitle className="text-left">MCQ Quiz Taker</SheetTitle>        </SheetHeader>
+        <div className="flex flex-col gap-4 py-6">
+          {/* Profile Section - Show at top if user is authenticated or in guest mode */}
+          {(user || isGuest) && (
             <div className="pb-4 border-b border-border">
-              <UserProfile />
+              {user ? <UserProfile /> : <GuestProfile />}
             </div>
           )}
-            <Button 
+          
+          <Button 
             variant="outline" 
             onClick={handleSettingsClick}
             className="justify-start"

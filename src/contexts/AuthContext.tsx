@@ -7,10 +7,13 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
+  isGuest: boolean
   signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>
+  continueAsGuest: () => void
+  exitGuestMode: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -19,9 +22,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isGuest, setIsGuest] = useState(false)
   const { toast } = useToast()
-
   useEffect(() => {
+    // Check if user is in guest mode on initial load
+    const guestMode = localStorage.getItem('guest_mode')
+    if (guestMode === 'true') {
+      setIsGuest(true)
+      setLoading(false)
+      return
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -159,18 +170,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         description: authError.message,
         variant: "destructive"
       })
-      return { error: authError }
-    }
+      return { error: authError }    }
+  }
+
+  const continueAsGuest = () => {
+    localStorage.setItem('guest_mode', 'true')
+    setIsGuest(true)
+    setLoading(false)
+    toast({
+      title: "Guest Mode",
+      description: "You're now using the app as a guest. Your data will be stored locally in your browser.",
+    })
+  }
+
+  const exitGuestMode = () => {
+    localStorage.removeItem('guest_mode')
+    setIsGuest(false)
   }
 
   const value = {
     user,
     session,
     loading,
+    isGuest,
     signUp,
     signIn,
     signOut,
     resetPassword,
+    continueAsGuest,
+    exitGuestMode,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

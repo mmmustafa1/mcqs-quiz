@@ -19,7 +19,7 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
 }) => {
   const { settings, updateSettings } = useQuiz();
   const { isHistoryEnabled, toggleHistoryEnabled } = useHistory(); // Get history state and toggle function
-  const { user } = useAuth(); // Get authentication state
+  const { user, isGuest } = useAuth(); // Get authentication state
 
   const settingsContent = (
     <div className={`space-y-4 ${className}`}>
@@ -89,9 +89,7 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
             onCheckedChange={toggleHistoryEnabled} // Use the toggle function from context
             className="data-[state=checked]:bg-primary"          />
         </div>
-      </div>
-
-      {/* Authentication Status Alert */}
+      </div>      {/* Authentication Status Alert */}
       {user && (
         <Alert className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
           <Shield className="h-4 w-4 text-green-600 dark:text-green-400" />
@@ -101,13 +99,23 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
         </Alert>
       )}
 
-      {!user && (
+      {isGuest && (
+        <Alert className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
+          <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <AlertDescription className="text-blue-800 dark:text-blue-200">
+            <strong>Guest Mode:</strong> Your API keys and settings are stored locally in your browser only.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {!user && !isGuest && (
         <Alert className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
           <Info className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           <AlertDescription className="text-amber-800 dark:text-amber-200">
             <strong>Sign in required:</strong> Create an account to securely store your API keys and access advanced features.
           </AlertDescription>
-        </Alert>      )}
+        </Alert>
+      )}
     </div>
   );
 

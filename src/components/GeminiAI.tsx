@@ -16,7 +16,7 @@ import { supabaseSecureStorage } from '@/lib/supabaseSecureStorage';
 const GeminiAI = () => {  
   const { parseQuestions, startQuiz, questions, setQuizTitle, settings } = useQuiz();
   const { addHistoryEntry, isHistoryEnabled } = useHistory();
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,11 +31,10 @@ const GeminiAI = () => {
   const [numberOfQuestions, setNumberOfQuestions] = useState(10);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
   const [useAllFiles, setUseAllFiles] = useState(true);
-
   // Load saved API key on component mount and when user changes
   useEffect(() => {
     const loadApiKey = async () => {
-      if (!user) {
+      if (!user && !isGuest) {
         setApiKey('');
         setApiKeySaved(false);
         return;
@@ -43,7 +42,15 @@ const GeminiAI = () => {
 
       setIsLoadingApiKey(true);
       try {
-        const savedApiKey = await supabaseSecureStorage.getApiKey();
+        let savedApiKey;
+        if (isGuest) {
+          // For guest mode, use localStorage
+          savedApiKey = localStorage.getItem('gemini_api_key');
+        } else {
+          // For authenticated users, use Supabase
+          savedApiKey = await supabaseSecureStorage.getApiKey();
+        }
+        
         if (savedApiKey) {
           setApiKey(savedApiKey);
           setApiKeySaved(true);
@@ -61,14 +68,13 @@ const GeminiAI = () => {
     };
 
     loadApiKey();
-  }, [user]);
-
-  // Save API key to Supabase
+  }, [user, isGuest]);
+  // Save API key to Supabase or localStorage
   const saveApiKey = async () => {
-    if (!user) {
+    if (!user && !isGuest) {
       toast({
         title: "Authentication Required",
-        description: "Please sign in to save your API key securely.",
+        description: "Please sign in or continue as guest to save your API key.",
         variant: "destructive",
       });
       return;
@@ -85,31 +91,28 @@ const GeminiAI = () => {
 
     setIsLoadingApiKey(true);
     try {
-      const result = await supabaseSecureStorage.storeApiKey(apiKey.trim());
-      if (result.success) {
+      if (isGuest) {
+        // For guest mode, save to localStorage
+        localStorage.setItem('gemini_api_key', apiKey.trim());
         setApiKeySaved(true);
         toast({
           title: "API Key Saved",
-          description: "Your API key has been saved securely.",
-        });      } else {
-        console.error('Failed to save API key:', result.error);
-        toast({
-          title: "Save Failed",
-          description: result.error || "Failed to save API key.",
-          variant: "destructive",
+          description: "Your API key has been saved locally in your browser.",
         });
-        
-        // Show additional help for common errors
-        if (result.error?.includes('table "secure_settings" does not exist')) {
+      } else {
+        // For authenticated users, save to Supabase
+        const result = await supabaseSecureStorage.storeApiKey(apiKey.trim());
+        if (result.success) {
+          setApiKeySaved(true);
           toast({
-            title: "Database Setup Required",
-            description: "Please run the Supabase migration SQL to create the secure_settings table.",
-            variant: "destructive",
+            title: "API Key Saved",
+            description: "Your API key has been saved securely.",
           });
-        } else if (result.error?.includes('Permission denied')) {
+        } else {
+          console.error('Failed to save API key:', result.error);
           toast({
-            title: "Permission Error", 
-            description: "Check your Supabase Row Level Security policies.",
+            title: "Save Failed",
+            description: result.error || "Failed to save API key.",
             variant: "destructive",
           });
         }
@@ -120,8 +123,7 @@ const GeminiAI = () => {
         title: "Save Failed",
         description: "An unexpected error occurred while saving your API key.",
         variant: "destructive",
-      });
-    } finally {
+      });    } finally {
       setIsLoadingApiKey(false);
     }
   };
@@ -756,7 +758,7 @@ Follow these guidelines:
                   onClick={handleSaveApiKey}
                   className="mt-2 text-xs sm:text-sm h-8 sm:h-10"
                   variant="secondary"
-                  disabled={!apiKey.trim() || apiKeySaved || isLoadingApiKey || !user}
+                  disabled={!apiKey.trim() || apiKeySaved || isLoadingApiKey || (!user && !isGuest)}
                 >
                   {isLoadingApiKey ? (
                     <>
@@ -771,7 +773,7 @@ Follow these guidelines:
                   ) : (
                     <>
                       <Save className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                      {user ? "Save API Key" : "Sign In Required"}
+                      {(user || isGuest) ? "Save API Key" : "Sign In Required"}
                     </>
                   )}
                 </Button>
