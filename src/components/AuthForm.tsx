@@ -12,6 +12,7 @@ export function AuthForm() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
   const [resetEmail, setResetEmail] = useState('')
   const [showResetForm, setShowResetForm] = useState(false)
 
@@ -23,18 +24,22 @@ export function AuthForm() {
     await signIn(email, password)
     setLoading(false)
   }
-
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email || !password) return
+    if (!email || !password || !name) return
 
     if (password.length < 6) {
       alert('Password must be at least 6 characters long')
       return
     }
 
+    if (name.trim().length < 2) {
+      alert('Name must be at least 2 characters long')
+      return
+    }
+
     setLoading(true)
-    await signUp(email, password)
+    await signUp(email, password, name.trim())
     setLoading(false)
   }
 
@@ -158,9 +163,24 @@ export function AuthForm() {
               </div>
             </form>
           </TabsContent>
-          
-          <TabsContent value="signup" className="space-y-4">
+            <TabsContent value="signup" className="space-y-4">
             <form onSubmit={handleSignUp} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="signup-name">Full Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="signup-name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="pl-10"
+                    minLength={2}
+                    required
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="signup-email">Email</Label>
                 <div className="relative">
