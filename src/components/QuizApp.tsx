@@ -41,30 +41,47 @@ const QuizApp = () => {
     );
   }
   // Show authentication form if user is not signed in and not in guest mode
-  if (!user && !isGuest) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background to-secondary dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-        <div className="absolute top-6 right-6">
+  if (!user && !isGuest) {    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 transition-colors duration-300 relative overflow-hidden">        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30"></div>
+          <div className="absolute inset-0 pattern-dots"></div>
+        </div>
+        
+        <div className="absolute top-6 right-6 z-10">
           <ThemeToggle />
         </div>
         
-        <div className="w-full max-w-md space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">MCQ Quiz Taker</h1>
-            <p className="text-muted-foreground">
+        <div className="w-full max-w-md space-y-8 relative z-10">
+          <div className="text-center space-y-4">            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-2xl"></div>
+              <div className="relative z-10 flex items-center justify-center">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center transform rotate-12">
+                  <div className="text-white text-xl font-bold">Q</div>
+                </div>
+                <div className="w-6 h-6 bg-white/30 rounded-md flex items-center justify-center ml-1 transform -rotate-6">
+                  <div className="text-white text-sm font-bold">A</div>
+                </div>
+              </div>
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              MCQ Quiz Taker
+            </h1>
+            <p className="text-lg text-muted-foreground leading-relaxed">
               Craft and conquer your custom quizzes with secure cloud storage!
             </p>
           </div>
           
-          <AuthForm />
+          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-xl border-0 p-8">
+            <AuthForm />
+          </div>
           
           {/* Continue as Guest Button */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-gray-300 dark:border-gray-600" />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
+            <div className="relative flex justify-center text-sm uppercase">
+              <span className="bg-transparent px-4 text-muted-foreground font-medium">
                 Or
               </span>
             </div>
@@ -73,33 +90,36 @@ const QuizApp = () => {
           <Button 
             variant="outline" 
             onClick={continueAsGuest}
-            className="w-full"
+            className="w-full h-12 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-gray-200 dark:border-gray-600 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-200 font-medium"
           >
             Continue as Guest
           </Button>
           
-          <div className="text-center text-xs text-muted-foreground space-y-1">
-            <p>Sign up to securely store your API keys and access all features</p>
-            <p className="text-amber-600 dark:text-amber-400">
-              Guest mode: Data stored locally in your browser only
+          <div className="text-center text-sm text-muted-foreground space-y-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
+            <p className="font-medium">Sign up to securely store your API keys and access all features</p>
+            <p className="text-amber-600 dark:text-amber-400 font-medium">
+              ⚠️ Guest mode: Data stored locally in your browser only
             </p>
           </div>
         </div>
         
-        <footer className="mt-8 text-center text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} MMM. All rights reserved.</p>
+        <footer className="mt-12 text-center text-sm text-muted-foreground relative z-10">
+          <p>© {new Date().getFullYear()} Made with ❤️ by MMM</p>
         </footer>
       </div>
     );
-  }
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-background to-secondary dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 relative">      <div className="absolute top-6 right-6 hidden md:flex items-center gap-2">
+  }  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 transition-all duration-300 relative">      <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30"></div>
+        <div className="absolute inset-0 pattern-dots"></div>
+      </div>      
+      <div className="absolute top-6 right-6 hidden md:flex items-center gap-2 z-50">
         {user ? <UserProfile /> : <GuestProfile />}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setSettingsOpen(true)}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground backdrop-blur-sm bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-200"
         >
           <Settings className="h-5 w-5" />
           <span className="sr-only">Settings</span>
@@ -112,29 +132,32 @@ const QuizApp = () => {
         showHistoryButton={!showHistory && !quizStarted && !quizFinished}
         onOpenSettings={() => setSettingsOpen(true)}
       />
-      <Card className="w-full max-w-5xl shadow-xl overflow-hidden">
-        <CardHeader className="text-center bg-muted/40 dark:bg-muted/20 border-b p-3 sm:p-4 md:p-6">
-          <CardTitle className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-primary">
+      
+      <Card className="w-full max-w-5xl shadow-2xl overflow-hidden backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-0 relative z-10">        <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white border-0 p-6 md:p-8">
+          <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight flex items-center justify-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center relative">
+              <div className="absolute inset-0 bg-white/10 rounded-lg transform rotate-3"></div>
+              <div className="relative z-10 text-white text-lg font-black">Q</div>
+            </div>
             MCQ Quiz Taker
           </CardTitle>
-          <p className="text-muted-foreground mt-1 text-xs sm:text-sm md:text-base">
-            Craft and conquer your custom quizzes!
+          <p className="text-blue-50 mt-2 text-sm sm:text-base md:text-lg font-medium">
+            Craft and conquer your custom quizzes with AI power!
           </p>
         </CardHeader>
-        <CardContent className="p-3 sm:p-6 md:p-8">          {showHistory ? (
+        <CardContent className="p-4 sm:p-6 md:p-8">
+          {showHistory ? (
             <QuizHistory onCloseHistory={() => setShowHistory(false)} />
           ) : (
             <>
               {!quizStarted && !quizFinished && (
-                <div className="space-y-4 sm:space-y-6">
-                  <Tabs defaultValue="manual" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
-                      <TabsTrigger value="manual" className="flex items-center justify-center gap-1 sm:gap-2">
-                        <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                <div className="space-y-4 sm:space-y-6">                  <Tabs defaultValue="manual" className="w-full">
+                    <TabsList className="tabs-enhanced grid w-full grid-cols-2 mb-6 h-12">                      <TabsTrigger value="manual" className="tab-trigger-enhanced flex items-center justify-center gap-2 text-sm font-medium transition-all duration-200 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400">
+                        <FileText className="h-4 w-4" />
                         <span>Manual Input</span>
                       </TabsTrigger>
-                      <TabsTrigger value="ai" className="flex items-center justify-center gap-1 sm:gap-2">
-                        <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <TabsTrigger value="ai" className="tab-trigger-enhanced flex items-center justify-center gap-2 text-sm font-medium transition-all duration-200 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-400">
+                        <Sparkles className="h-4 w-4" />
                         <span>Gemini AI</span>
                       </TabsTrigger>
                     </TabsList>
@@ -145,16 +168,15 @@ const QuizApp = () => {
                       <GeminiAI />
                     </TabsContent>
                   </Tabs>
-                  
-                  {/* View History Button - only show on tablet/desktop */}
-                  <div className="hidden md:flex justify-center pt-4">
+                    {/* View History Button - only show on tablet/desktop */}
+                  <div className="hidden md:flex justify-center pt-6">
                     <Button 
                       variant="outline" 
                       onClick={() => setShowHistory(true)}
-                      className="flex items-center gap-2"
+                      className="btn-gradient flex items-center gap-2 h-12 px-6 border-indigo-200 dark:border-indigo-700 transition-all duration-200"
                     >
-                      <History className="h-4 w-4" />
-                      View Quiz History
+                      <History className="h-5 w-5" />
+                      <span className="font-medium">View Quiz History</span>
                     </Button>
                   </div>
                 </div>
@@ -166,9 +188,11 @@ const QuizApp = () => {
             </>
           )}
         </CardContent>
-      </Card>      <footer className="mt-4 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} MMM. All rights reserved.</p>
-      </footer>      {/* Settings Dialog */}
+      </Card>
+      <footer className="mt-4 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground">
+        <p>© {new Date().getFullYear()} Made with ❤️ by MMM</p>
+      </footer>
+      {/* Settings Dialog */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>

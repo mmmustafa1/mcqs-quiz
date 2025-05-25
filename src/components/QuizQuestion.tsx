@@ -77,19 +77,33 @@ const QuizQuestion = () => {
   };
 
   return (
-    <div className="quiz-card animate-fade-in">
-      <div className="quiz-progress mb-6">
-        <div 
-          className="quiz-progress-inner"
-          style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
-        ></div>
+    <div className="quiz-card animate-fade-in relative">
+      {/* Enhanced Progress Bar */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-sm font-medium text-muted-foreground">
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </span>
+          <span className="text-sm font-bold text-primary">
+            {Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%
+          </span>
+        </div>
+        <div className="quiz-progress h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-700 ease-out"
+            style={{
+              width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`
+            }}
+          ></div>
+        </div>
       </div>
       
-      <div className="mb-2 text-sm text-gray-600 dark:text-gray-400">
-        Question {currentQuestionIndex + 1} of {questions.length}
+      {/* Question */}
+      <div className="mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 leading-relaxed text-gray-900 dark:text-gray-100">
+          {currentQuestion.question}
+        </h2>
       </div>
-      
-      <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">{currentQuestion.question}</h2>
       
       <div className="space-y-2 sm:space-y-3">
         {currentQuestion.options.map((option, index) => (

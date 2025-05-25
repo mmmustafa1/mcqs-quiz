@@ -18,14 +18,13 @@ export function UserProfile() {
     ? 'Loading...' 
     : profile?.display_name || user.email?.split('@')[0] || 'User'
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+  return (    <Popover open={open} onOpenChange={setOpen}>      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2 relative z-50">
           <User className="h-4 w-4" />
           <span className="hidden sm:inline">{displayName}</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80" align="end">
+      <PopoverContent className="w-80 z-50" align="end">
         <Card className="border-0 shadow-none">
           <CardContent className="space-y-4 p-4">
             <div className="space-y-3">

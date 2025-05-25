@@ -22,13 +22,13 @@ export function GuestProfile() {
 
   return (    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 gap-2 rounded-full px-3">
+        <Button variant="ghost" className="relative h-8 gap-2 rounded-full px-3 z-50">
           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted">
             <User className="h-3 w-3" />
           </div>
           <span className="hidden sm:inline text-sm">{guestDisplayName}</span>
         </Button>
-      </DropdownMenuTrigger><DropdownMenuContent className="w-56" align="end" forceMount>
+      </DropdownMenuTrigger><DropdownMenuContent className="w-56 z-50" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <div className="flex items-center justify-between">

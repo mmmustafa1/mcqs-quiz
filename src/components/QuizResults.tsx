@@ -35,117 +35,156 @@ const QuizResults = () => {
     // but adding them might cause multiple saves if the component re-renders unexpectedly.
     // Assuming this component remounts cleanly each time results are shown.
   }, []); 
-  
-  return (
-    <div className="quiz-card animate-fade-in">
-      <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6">Quiz Results</h2>
-      
-      <div className="p-4 sm:p-6 bg-gray-50 dark:bg-gray-800 rounded-xl mb-6 sm:mb-8">
-        <div className="text-center">
-          <div className="text-3xl sm:text-4xl font-bold mb-2">{score.toFixed(1)}%</div>
-          <div className="text-sm sm:text-lg text-gray-600 dark:text-gray-400">
-            You answered {correctAnswers} out of {questions.length} questions correctly
-          </div>
-        </div>
-        
-        <div className="mt-4 w-full bg-gray-200 dark:bg-gray-700 h-3 rounded-full">
-          <div 
-            className={cn(
-              "h-full rounded-full transition-all duration-1000",
-              score >= 70 ? "bg-quiz-correct" : "bg-quiz-incorrect"
-            )}
-            style={{ width: `${score}%` }}
-          ></div>
-        </div>
-      </div>
-      
-      <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Question Review</h3>
-      
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        {questions.map((question, qIndex) => {
-          const selectedOption = question.options[question.userAnswerIndex!];
-          const isCorrect = selectedOption?.isCorrect;
-          const correctOption = question.options.find(opt => opt.isCorrect);
-          
-          return (
-            <div key={qIndex} className="py-4 sm:py-6 first:pt-0 last:pb-0">
-              <div className="flex gap-2 sm:gap-3">
-                <div className={cn(
-                  "flex items-center justify-center h-5 w-5 sm:h-6 sm:w-6 rounded-full flex-shrink-0 mt-1",
-                  isCorrect ? "bg-quiz-correct" : "bg-quiz-incorrect"
-                )}>
-                  {isCorrect ? <Check className="text-white h-3 w-3 sm:h-4 sm:w-4" /> : <X className="text-white h-3 w-3 sm:h-4 sm:w-4" />}
-                </div>
-                <div>
-                  <h4 className="text-base sm:text-lg font-medium mb-2 sm:mb-3">
-                    {qIndex + 1}. {question.question}
-                  </h4>
-                  
-                  <div className="space-y-2 sm:space-y-3 ml-1 sm:ml-2">
-                    {question.options.map((option, oIndex) => (
-                      <div 
-                        key={oIndex}
-                        className={cn(
-                          "p-2 sm:p-3 rounded-lg border text-sm sm:text-base",
-                          option.isCorrect 
-                            ? "border-quiz-correct bg-green-50 dark:bg-green-900/10" 
-                            : oIndex === question.userAnswerIndex && !option.isCorrect
-                              ? "border-quiz-incorrect bg-red-50 dark:bg-red-900/10"
-                              : "border-gray-200 dark:border-gray-700"
-                        )}
-                      >
-                        <div className="flex justify-between items-center">
-                          <div className="font-medium">{option.text}</div>
-                          {(option.isCorrect || oIndex === question.userAnswerIndex) && (
-                            <div>
-                              {option.isCorrect ? (
-                                <Check className="text-quiz-correct h-4 w-4 sm:h-5 sm:w-5" />
-                              ) : (
-                                <X className="text-quiz-incorrect h-4 w-4 sm:h-5 sm:w-5" />
-                              )}
-                            </div>
-                          )}
-                        </div>
-                        
-                        {option.explanation && (
-                          <div className="quiz-explanation mt-1 sm:mt-2 text-xs sm:text-sm">
-                            {option.explanation}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+    return (
+    <div className="quiz-card animate-fade-in">      {/* Enhanced Header with Celebration Animation */}
+      <div className="text-center mb-8">
+        <div className="mb-4 flex justify-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-xl"></div>
+            <div className="relative z-10 flex items-center justify-center">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center transform rotate-12">
+                <div className="text-white text-lg font-bold">
+                  {score >= 90 ? '★' : score >= 70 ? '✓' : score >= 50 ? '◐' : '○'}
                 </div>
               </div>
             </div>
-          );
-        })}
+          </div>
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-bold gradient-text mb-2">Quiz Complete!</h2>
+        <p className="text-muted-foreground">
+          {score >= 90 ? 'Outstanding performance!' : 
+           score >= 70 ? 'Great job!' : 
+           score >= 50 ? 'Good effort!' : 
+           'Keep practicing!'}
+        </p>
       </div>
       
-      <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+      {/* Enhanced Score Card */}
+      <div className="card-enhanced p-6 sm:p-8 mb-8">
+        <div className="text-center">
+          <div className={cn(
+            "text-4xl sm:text-5xl font-bold mb-4 transition-all duration-1000",
+            score >= 70 ? "text-green-600 dark:text-green-400" : "text-orange-600 dark:text-orange-400"
+          )}>
+            {score.toFixed(1)}%
+          </div>
+          <div className="text-lg sm:text-xl text-muted-foreground mb-6">
+            {correctAnswers} out of {questions.length} questions correct
+          </div>
+            {/* Enhanced Progress Bar */}
+          <div className="relative w-full bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden">
+            <div 
+              className={cn(
+                "h-full rounded-full transition-all duration-2000 ease-out progress-bar-width",
+                score >= 90 ? "bg-gradient-to-r from-green-500 to-emerald-600" :
+                score >= 70 ? "bg-gradient-to-r from-blue-500 to-green-500" :
+                score >= 50 ? "bg-gradient-to-r from-yellow-500 to-orange-500" :
+                "bg-gradient-to-r from-red-500 to-pink-500"
+              )}
+              style={{"--progress-width": `${score}%`} as React.CSSProperties}
+            ></div>
+          </div>
+        </div>
+      </div>      
+      {/* Enhanced Question Review */}
+      <div className="mb-8">
+        <h3 className="text-xl sm:text-2xl font-bold gradient-text mb-6">Question Review</h3>
+        
+        <div className="space-y-6">
+          {questions.map((question, qIndex) => {
+            const selectedOption = question.options[question.userAnswerIndex!];
+            const isCorrect = selectedOption?.isCorrect;
+            const correctOption = question.options.find(opt => opt.isCorrect);
+            
+            return (
+              <div key={qIndex} className="card-enhanced p-4 sm:p-6">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className={cn(
+                    "flex items-center justify-center h-8 w-8 rounded-full flex-shrink-0 mt-1",
+                    isCorrect 
+                      ? "bg-gradient-to-r from-green-500 to-emerald-600" 
+                      : "bg-gradient-to-r from-red-500 to-pink-600"
+                  )}>
+                    {isCorrect ? (
+                      <Check className="text-white h-4 w-4" />
+                    ) : (
+                      <X className="text-white h-4 w-4" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+                      {qIndex + 1}. {question.question}
+                    </h4>
+                    
+                    <div className="space-y-3">
+                      {question.options.map((option, oIndex) => (
+                        <div 
+                          key={oIndex}
+                          className={cn(
+                            "p-3 sm:p-4 rounded-lg border-2 transition-all duration-300",
+                            option.isCorrect 
+                              ? "border-green-400 bg-green-50 dark:bg-green-900/20 shadow-green-100 dark:shadow-green-900/20 shadow-md" 
+                              : oIndex === question.userAnswerIndex && !option.isCorrect
+                                ? "border-red-400 bg-red-50 dark:bg-red-900/20 shadow-red-100 dark:shadow-red-900/20 shadow-md"
+                                : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50"
+                          )}
+                        >
+                          <div className="flex justify-between items-center">
+                            <div className="font-medium text-gray-900 dark:text-gray-100">{option.text}</div>
+                            {(option.isCorrect || oIndex === question.userAnswerIndex) && (
+                              <div>
+                                {option.isCorrect ? (
+                                  <Check className="text-green-600 dark:text-green-400 h-5 w-5" />
+                                ) : (
+                                  <X className="text-red-600 dark:text-red-400 h-5 w-5" />
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          
+                          {option.explanation && (
+                            <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border-l-4 border-blue-400">
+                              <div className="text-sm text-blue-800 dark:text-blue-200 font-medium mb-1">Explanation:</div>
+                              <div className="text-sm text-blue-700 dark:text-blue-300">
+                                {option.explanation}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>      
+      {/* Enhanced Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
         <Button
           onClick={restartQuiz}
-          className="quiz-btn quiz-btn-primary"
+          className="btn-gradient flex items-center gap-2 px-6 py-3 text-lg font-semibold"
         >
-          Restart Quiz
+          🔄 Restart Quiz
         </Button>
         <Button
           onClick={goToHome}
           variant="outline"
-          className="quiz-btn"
+          className="border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-6 py-3 text-lg font-semibold transition-all duration-300"
         >
-          Back to Home
+          🏠 Back to Home
         </Button>
       </div>
 
-      {/* Quiz Settings (like on start screen) */}
-      <div className="mt-6 sm:mt-8">
-        <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Quiz Settings</h2>
-        <div className="space-y-4 sm:space-y-6">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+      {/* Enhanced Quiz Settings */}
+      <div className="card-enhanced p-6">
+        <h3 className="text-xl font-bold gradient-text mb-6">Quiz Settings</h3>
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
             <div className="flex-grow">
-              <span className="font-medium text-sm sm:text-base">Immediate Feedback</span>
-              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Immediate Feedback</span>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Show correct/incorrect answers immediately after each question
               </p>
             </div>
@@ -157,10 +196,10 @@ const QuizResults = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
             <div className="flex-grow">
-              <span className="font-medium">Shuffle Questions</span>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Shuffle Questions</span>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Randomize the order of questions
               </p>
             </div>
@@ -172,10 +211,10 @@ const QuizResults = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
             <div className="flex-grow">
-              <span className="font-medium">Shuffle Options</span>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold text-gray-900 dark:text-gray-100">Shuffle Options</span>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Randomize the order of answer choices
               </p>
             </div>

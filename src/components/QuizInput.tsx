@@ -64,48 +64,64 @@ const QuizInput = () => {
 
     console.log("Starting quiz with questions:", questions);
     startQuiz();
-  };
-  return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in">
-      <h2 className="text-xl sm:text-2xl font-semibold text-center text-foreground">Manual Input</h2>
+  };  return (
+    <div className="space-y-8 animate-fade-in">
+      <div className="text-center">
+        <h2 className="text-2xl sm:text-3xl font-bold gradient-text mb-2">📝 Manual Input</h2>
+        <p className="text-muted-foreground">Upload a file or paste your quiz questions</p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Left Column: Upload and Paste */}
-        <div>
-          <input
+        <div className="space-y-4">          <input
             type="file"
-            accept=".txt"
+            accept=".txt,.pdf,.doc,.docx"
             ref={fileInputRef}
             onChange={handleFileUpload}
             className="hidden"
+            aria-label="Upload quiz document file"
           />
-          <Button
-            onClick={() => fileInputRef.current?.click()}
-            className="w-full mb-3 sm:mb-4 text-xs sm:text-sm"
-            variant="outline"
-          >
-            <Upload className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Upload Documents (PDF, DOC, TXT)
-          </Button>
+          
+          <div className="card-enhanced p-6">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <Upload className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              Upload Document
+            </h3>
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full btn-gradient"
+              variant="outline"
+            >
+              <Upload className="mr-2 h-4 w-4" /> 
+              Choose File (PDF, DOC, TXT)
+            </Button>
+          </div>
 
-          <div className="relative">
+          <div className="card-enhanced p-6">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <FileText className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              Paste Text
+            </h3>
             <Textarea
-              placeholder="Or paste your questions here..."
+              placeholder="Paste your quiz questions here..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              className="min-h-[150px] sm:min-h-[250px] text-sm focus-visible:ring-primary focus-visible:ring-offset-1"
+              className="min-h-[200px] text-sm border-2 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-300"
             />
           </div>
         </div>
 
         {/* Right Column: Format Example */}
-        <Alert className="bg-muted/50 dark:bg-muted/20 border-border">
-          <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
-          <AlertTitle className="font-semibold text-sm sm:text-base">Expected Format</AlertTitle>
-          <AlertDescription className="mt-1 sm:mt-2 space-y-1 sm:space-y-2">
-            <p className="text-xs text-muted-foreground">
-              Questions start with "Q:" or numbers (1., 2.). Mark the correct answer with an asterisk (*). Explanations are optional.
-            </p>
-            <pre className="text-xs whitespace-pre-wrap overflow-auto max-h-[150px] sm:max-h-[200px] p-2 sm:p-3 bg-background dark:bg-muted/30 rounded-md border border-border scrollbar-thin scrollbar-webkit">
+        <div className="card-enhanced p-6">
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <FileText className="h-5 w-5 text-green-600 dark:text-green-400" />
+            Expected Format
+          </h3>
+          <div className="text-sm text-muted-foreground mb-4">
+            Questions start with "Q:" or numbers (1., 2.). Mark the correct answer with an asterisk (*). Explanations are optional.
+          </div>
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <pre className="text-xs whitespace-pre-wrap overflow-auto max-h-[250px] text-gray-700 dark:text-gray-300">
 {`1. What is the capital of France?
 A) Berlin
     Explanation: Berlin is the capital of Germany.
@@ -122,28 +138,43 @@ B) Jane Austen*
 C) Mary Shelley
 D) Emily Brontë`}
             </pre>
-          </AlertDescription>
-        </Alert>
+          </div>
+        </div>
       </div>      
       
-      {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center pt-3 sm:pt-4 border-t border-border">
+      {/* Enhanced Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6 border-t border-gray-200 dark:border-gray-700">
         <Button
           onClick={handleTextInput}
-          variant="secondary"
-          className="flex-1 sm:flex-none sm:w-48 text-xs sm:text-sm h-9 sm:h-10"
-          disabled={!inputText.trim()} // Disable if textarea is empty
+          variant="outline"
+          className="sm:w-48 h-12 text-sm font-semibold border-2 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300"
+          disabled={!inputText.trim()}
         >
-          Parse Text Input
-        </Button>
-        <Button
+          🔍 Parse Text Input
+        </Button>        <Button
           onClick={handleStartQuiz}
-          className="flex-1 sm:flex-none sm:w-48 bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm h-9 sm:h-10"
-          disabled={!isParsed} // Disable if no questions parsed
+          className={`sm:w-48 h-12 text-sm font-semibold transition-all duration-300 ${
+            isParsed 
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105" 
+              : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+          }`}
+          disabled={!isParsed}
         >
-          Start Quiz {questions.length > 0 ? `(${questions.length})` : ''}
+          🚀 Start Quiz {questions.length > 0 ? `(${questions.length})` : ''}
         </Button>
       </div>
+      
+      {/* Status Indicator */}
+      {questions.length > 0 && (
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-full text-green-800 dark:text-green-200">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">
+              {questions.length} question{questions.length !== 1 ? 's' : ''} ready!
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
