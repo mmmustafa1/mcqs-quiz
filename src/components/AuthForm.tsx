@@ -66,47 +66,38 @@ export function AuthForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <form onSubmit={handleResetPassword} className="space-y-6">
-            <div className="space-y-2">
+          <form onSubmit={handleResetPassword} className="space-y-6">            <div className="space-y-2">
               <Label htmlFor="reset-email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Address</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-blue-500" />
-                <Input
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />                <Input
                   id="reset-email"
                   type="email"
                   placeholder="Enter your email"
                   value={resetEmail}
                   onChange={(e) => setResetEmail(e.target.value)}
-                  className="pl-10 h-12 border-2 focus:border-blue-500 dark:focus:border-blue-400"
+                  className="pl-10 h-12 border-2 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                   required
                 />
               </div>
-            </div>
-            <div className="space-y-3">
-              <Button type="submit" className="w-full h-12 btn-gradient text-lg font-semibold" disabled={loading}>
+            </div>            <div className="space-y-3">              <Button type="submit" className="w-full h-12 btn-gradient text-lg font-semibold text-white" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                📧 Send Reset Link
+                Send Reset Link
               </Button>
               <Button
                 type="button"
                 variant="ghost"
-                className="w-full h-12 hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => setShowResetForm(false)}
+                className="w-full h-12 hover:bg-gray-100 dark:hover:bg-gray-800"                onClick={() => setShowResetForm(false)}
               >
-                ← Back to Sign In
+                Back to Sign In
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
     )
-  }
-  return (
+  }  return (
     <Card className="w-full max-w-md mx-auto card-enhanced">
       <CardHeader className="space-y-4 text-center">
-        <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-          <span className="text-2xl">🧠</span>
-        </div>
         <CardTitle className="text-2xl gradient-text">Welcome</CardTitle>
         <CardDescription>
           Sign in to your account or create a new one
@@ -120,41 +111,35 @@ export function AuthForm() {
           </TabsList>
           
           <TabsContent value="signin" className="space-y-6 pt-6">
-            <form onSubmit={handleSignIn} className="space-y-6">
-              <div className="space-y-2">
+            <form onSubmit={handleSignIn} className="space-y-6">              <div className="space-y-2">
                 <Label htmlFor="signin-email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Address</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-blue-500" />
-                  <Input
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />                  <Input
                     id="signin-email"
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 border-2 focus:border-blue-500 dark:focus:border-blue-400"
+                    className="pl-10 h-12 border-2 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                     required
                   />
                 </div>
-              </div>
-              <div className="space-y-2">
+              </div>              <div className="space-y-2">
                 <Label htmlFor="signin-password" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-purple-500" />
-                  <Input
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-500" />                  <Input
                     id="signin-password"
                     type="password"
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12 border-2 focus:border-purple-500 dark:focus:border-purple-400"
+                    className="pl-10 h-12 border-2 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                     required
                   />
                 </div>
-              </div>
-              <div className="space-y-3">
-                <Button type="submit" className="w-full h-12 btn-gradient text-lg font-semibold" disabled={loading}>
+              </div>              <div className="space-y-3">                <Button type="submit" className="w-full h-12 btn-gradient text-lg font-semibold text-white" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  🔐 Sign In
+                  Sign In
                 </Button>
                 <Button
                   type="button"
@@ -169,57 +154,50 @@ export function AuthForm() {
           </TabsContent>
           
           <TabsContent value="signup" className="space-y-6 pt-6">
-            <form onSubmit={handleSignUp} className="space-y-6">
-              <div className="space-y-2">
+            <form onSubmit={handleSignUp} className="space-y-6">              <div className="space-y-2">
                 <Label htmlFor="signup-name" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Full Name</Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-green-500" />
-                  <Input
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-500" />                  <Input
                     id="signup-name"
                     type="text"
                     placeholder="Enter your full name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-10 h-12 border-2 focus:border-green-500 dark:focus:border-green-400"
+                    className="pl-10 h-12 border-2 focus:border-green-500 dark:focus:border-green-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                     minLength={2}
                     required
                   />
                 </div>
-              </div>
-              <div className="space-y-2">
+              </div>              <div className="space-y-2">
                 <Label htmlFor="signup-email" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email Address</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-blue-500" />
-                  <Input
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />                  <Input
                     id="signup-email"
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 border-2 focus:border-blue-500 dark:focus:border-blue-400"
+                    className="pl-10 h-12 border-2 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                     required
                   />
                 </div>
-              </div>
-              <div className="space-y-2">
+              </div>              <div className="space-y-2">
                 <Label htmlFor="signup-password" className="text-sm font-semibold text-gray-700 dark:text-gray-300">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-purple-500" />
-                  <Input
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-purple-500" />                  <Input
                     id="signup-password"
                     type="password"
                     placeholder="Create a password (min. 6 characters)"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12 border-2 focus:border-purple-500 dark:focus:border-purple-400"
+                    className="pl-10 h-12 border-2 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                     minLength={6}
                     required
                   />
                 </div>
-              </div>
-              <Button type="submit" className="w-full h-12 btn-gradient text-lg font-semibold" disabled={loading}>
+              </div>              <Button type="submit" className="w-full h-12 btn-gradient text-lg font-semibold text-white" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                🎉 Create Account
+                Create Account
               </Button>
             </form>
           </TabsContent>

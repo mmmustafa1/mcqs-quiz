@@ -39,39 +39,38 @@ const QuizApp = () => {
         </div>
       </div>
     );
-  }
-  // Show authentication form if user is not signed in and not in guest mode
-  if (!user && !isGuest) {    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 transition-colors duration-300 relative overflow-hidden">        <div className="absolute inset-0 opacity-20">
+  }  // Show authentication form if user is not signed in and not in guest mode
+  if (!user && !isGuest) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 transition-colors duration-300 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30"></div>
           <div className="absolute inset-0 pattern-dots"></div>
         </div>
         
-        <div className="absolute top-6 right-6 z-10">
+        <div className="absolute top-4 right-4 z-10">
           <ThemeToggle />
         </div>
         
-        <div className="w-full max-w-md space-y-8 relative z-10">
-          <div className="text-center space-y-4">            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-2xl"></div>
+        <div className="w-full max-w-md space-y-4 relative z-10">
+          <div className="text-center space-y-2">
+            <div className="mx-auto w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-xl"></div>
               <div className="relative z-10 flex items-center justify-center">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center transform rotate-12">
-                  <div className="text-white text-xl font-bold">Q</div>
-                </div>
-                <div className="w-6 h-6 bg-white/30 rounded-md flex items-center justify-center ml-1 transform -rotate-6">
-                  <div className="text-white text-sm font-bold">A</div>
+                <div className="w-6 h-6 bg-white/20 rounded-md flex items-center justify-center">
+                  <div className="text-white text-sm font-bold">Q</div>
                 </div>
               </div>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               MCQ Quiz Taker
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Craft and conquer your custom quizzes with secure cloud storage!
+            <p className="text-sm text-muted-foreground">
+              Craft and conquer your custom quizzes
             </p>
           </div>
           
-          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-xl border-0 p-8">
+          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl shadow-xl border-0 p-6">
             <AuthForm />
           </div>
           
@@ -90,25 +89,24 @@ const QuizApp = () => {
           <Button 
             variant="outline" 
             onClick={continueAsGuest}
-            className="w-full h-12 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-gray-200 dark:border-gray-600 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-200 font-medium"
+            className="w-full h-10 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-gray-200 dark:border-gray-600 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-200 font-medium"
           >
             Continue as Guest
           </Button>
           
-          <div className="text-center text-sm text-muted-foreground space-y-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
-            <p className="font-medium">Sign up to securely store your API keys and access all features</p>
-            <p className="text-amber-600 dark:text-amber-400 font-medium">
-              ⚠️ Guest mode: Data stored locally in your browser only
+          <div className="text-center text-xs text-muted-foreground space-y-1 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 border border-amber-200 dark:border-amber-800">
+            <p className="font-medium">Sign up to securely store your API keys</p>
+            <p className="text-amber-600 dark:text-amber-400 font-medium">              Guest mode: Data stored locally only
             </p>
           </div>
         </div>
         
-        <footer className="mt-12 text-center text-sm text-muted-foreground relative z-10">
+        <footer className="mt-6 text-center text-xs text-muted-foreground relative z-10">
           <p>© {new Date().getFullYear()} Made with ❤️ by MMM</p>
         </footer>
       </div>
     );
-  }  return (
+  }return (
     <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 transition-all duration-300 relative">      <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30"></div>
         <div className="absolute inset-0 pattern-dots"></div>
