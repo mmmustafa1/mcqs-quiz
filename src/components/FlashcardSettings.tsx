@@ -6,6 +6,8 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Settings, Clock, Shuffle, Eye, Filter } from 'lucide-react';
+import GeminiAPISettings from './GeminiAPISettings';
+import { useGeminiAPI } from '@/hooks/useGeminiAPI';
 
 interface FlashcardSettingsProps {
   asCard?: boolean;
@@ -13,6 +15,7 @@ interface FlashcardSettingsProps {
 
 const FlashcardSettings = ({ asCard = true }: FlashcardSettingsProps) => {
   const { settings, updateSettings } = useFlashcard();
+  const { apiKey, setApiKey, apiKeySaved, setApiKeySaved } = useGeminiAPI();
 
   const content = (
     <div className="space-y-6">
@@ -106,9 +109,7 @@ const FlashcardSettings = ({ asCard = true }: FlashcardSettingsProps) => {
             />
           </div>
         )}
-      </div>
-
-      {/* Difficulty Filter */}
+      </div>      {/* Difficulty Filter */}
       <div className="space-y-3">
         <Label className="text-base font-medium flex items-center gap-2">
           <Filter className="h-4 w-4" />
@@ -130,6 +131,17 @@ const FlashcardSettings = ({ asCard = true }: FlashcardSettingsProps) => {
         <p className="text-sm text-muted-foreground">
           Filter cards by difficulty level during study sessions.
         </p>
+      </div>
+
+      {/* Gemini API Settings */}
+      <div className="space-y-2">
+        <h3 className="text-base font-medium text-foreground">AI Integration</h3>
+        <GeminiAPISettings 
+          apiKey={apiKey}
+          setApiKey={setApiKey}
+          apiKeySaved={apiKeySaved}
+          setApiKeySaved={setApiKeySaved}
+        />
       </div>
     </div>
   );

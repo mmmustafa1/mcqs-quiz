@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useFlashcard } from '@/hooks/useFlashcard';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,23 +10,20 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, FileText, Loader2, Settings, Lightbulb, BookOpen, Brain } from 'lucide-react';
+import { Upload, FileText, Loader2, Lightbulb, BookOpen, Brain, Info, Settings } from 'lucide-react';
 import { FlashcardGenerationService, FlashcardGenerationOptions } from '@/lib/flashcardService';
-import { supabaseSecureStorage } from '@/lib/supabaseSecureStorage';
+import { useGeminiAPI } from '@/hooks/useGeminiAPI';
 
-const FlashcardGenerator = () => {
-  const { addGeneratedDeck, isGenerating, setIsGenerating } = useFlashcard();
+const FlashcardGenerator = () => {  const { addGeneratedDeck, isGenerating, setIsGenerating } = useFlashcard();
   const { user, isGuest } = useAuth();
   const { toast } = useToast();
+  const { apiKey, setApiKey, apiKeySaved, isLoadingApiKey, saveApiKey } = useGeminiAPI();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // State
   const [customInstructions, setCustomInstructions] = useState('');
   const [topicInstructions, setTopicInstructions] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [apiKey, setApiKey] = useState('');
-  const [apiKeySaved, setApiKeySaved] = useState(false);
-  const [isLoadingApiKey, setIsLoadingApiKey] = useState(false);
   const [deckTitle, setDeckTitle] = useState('');
   
   // Generation options
@@ -34,100 +31,7 @@ const FlashcardGenerator = () => {
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard' | 'mixed'>('medium');
   const [cardType, setCardType] = useState<'question-answer' | 'term-definition' | 'concept-explanation' | 'mixed'>('mixed');
   const [focusAreas, setFocusAreas] = useState('');
-
   // Load saved API key on component mount
-  useEffect(() => {
-    const loadApiKey = async () => {
-      if (!user && !isGuest) {
-        setApiKey('');
-        setApiKeySaved(false);
-        return;
-      }
-
-      setIsLoadingApiKey(true);
-      try {
-        let savedApiKey;
-        if (isGuest) {
-          savedApiKey = localStorage.getItem('gemini_api_key');
-        } else {
-          savedApiKey = await supabaseSecureStorage.getApiKey();
-        }
-        
-        if (savedApiKey) {
-          setApiKey(savedApiKey);
-          setApiKeySaved(true);
-        } else {
-          setApiKey('');
-          setApiKeySaved(false);
-        }
-      } catch (error) {
-        console.error('Error loading API key:', error);
-        setApiKey('');
-        setApiKeySaved(false);
-      } finally {
-        setIsLoadingApiKey(false);
-      }
-    };
-
-    loadApiKey();
-  }, [user, isGuest]);
-
-  const saveApiKey = async () => {
-    if (!user && !isGuest) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in or continue as guest to save your API key.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!apiKey.trim()) {
-      toast({
-        title: "Invalid API Key",
-        description: "Please enter a valid API key.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoadingApiKey(true);
-    try {
-      if (isGuest) {
-        localStorage.setItem('gemini_api_key', apiKey.trim());
-        setApiKeySaved(true);
-        toast({
-          title: "API Key Saved",
-          description: "Your API key has been saved locally in your browser.",
-        });
-      } else {
-        const result = await supabaseSecureStorage.storeApiKey(apiKey.trim());
-        if (result.success) {
-          setApiKeySaved(true);
-          toast({
-            title: "API Key Saved",
-            description: "Your API key has been saved securely.",
-          });
-        } else {
-          console.error('Failed to save API key:', result.error);
-          toast({
-            title: "Save Failed",
-            description: result.error || "Failed to save API key.",
-            variant: "destructive",
-          });
-        }
-      }
-    } catch (error) {
-      console.error('Error saving API key:', error);
-      toast({
-        title: "Save Failed",
-        description: "An unexpected error occurred while saving your API key.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoadingApiKey(false);
-    }
-  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -328,9 +232,22 @@ const FlashcardGenerator = () => {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
               />
-            </div>
-            <Button 
-              onClick={saveApiKey} 
+            </div>            <Button 
+              onClick={async () => {
+                const result = await saveApiKey();
+                if (result.success) {
+                  toast({
+                    title: "API Key Saved",
+                    description: "Your API key has been saved securely.",
+                  });
+                } else {
+                  toast({
+                    title: "Save Failed",
+                    description: result.error || "Failed to save API key.",
+                    variant: "destructive",
+                  });
+                }
+              }} 
               disabled={isLoadingApiKey || !apiKey.trim()}
               className="w-full"
             >

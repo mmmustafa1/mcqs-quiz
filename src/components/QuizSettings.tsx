@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Settings, Shield, Info } from 'lucide-react';
+import GeminiAPISettings from './GeminiAPISettings';
+import { useGeminiAPI } from '@/hooks/useGeminiAPI';
 
 interface QuizSettingsProps {
   className?: string;
@@ -20,6 +22,7 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
   const { settings, updateSettings } = useQuiz();
   const { isHistoryEnabled, toggleHistoryEnabled } = useHistory(); // Get history state and toggle function
   const { user, isGuest } = useAuth(); // Get authentication state
+  const { apiKey, setApiKey, apiKeySaved, setApiKeySaved } = useGeminiAPI();
 
   const settingsContent = (
     <div className={`space-y-4 ${className}`}>
@@ -72,9 +75,7 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
             className="data-[state=checked]:bg-primary"
           />
         </div>
-      </div>
-
-      {/* Add History Toggle Setting */}
+      </div>      {/* Add History Toggle Setting */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 p-3 rounded-md bg-background dark:bg-muted/30 border border-border">
         <div className="flex-grow">
           <Label htmlFor="enable-history" className="font-medium text-sm">Record Quiz History</Label>
@@ -89,7 +90,18 @@ const QuizSettings: React.FC<QuizSettingsProps> = ({
             onCheckedChange={toggleHistoryEnabled} // Use the toggle function from context
             className="data-[state=checked]:bg-primary"          />
         </div>
-      </div>      {/* Authentication Status Alert */}
+      </div>
+
+      {/* Gemini API Settings */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-foreground">AI Integration</h3>
+        <GeminiAPISettings 
+          apiKey={apiKey}
+          setApiKey={setApiKey}
+          apiKeySaved={apiKeySaved}
+          setApiKeySaved={setApiKeySaved}
+        />
+      </div>{/* Authentication Status Alert */}
       {user && (
         <Alert className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
           <Shield className="h-4 w-4 text-green-600 dark:text-green-400" />

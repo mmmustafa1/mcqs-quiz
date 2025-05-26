@@ -9,124 +9,26 @@ import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, FileText, Info, Loader2, Save, Check, BookOpen, BrainCircuit, Settings } from 'lucide-react';
+import { Upload, FileText, Info, Loader2, Save, Check, BookOpen, BrainCircuit } from 'lucide-react';
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
-import { supabaseSecureStorage } from '@/lib/supabaseSecureStorage';
+import { useGeminiAPI } from '@/hooks/useGeminiAPI';
 
 const GeminiAI = () => {  
   const { parseQuestions, startQuiz, questions, setQuizTitle, settings } = useQuiz();
   const { addHistoryEntry, isHistoryEnabled } = useHistory();
   const { user, isGuest } = useAuth();
   const { toast } = useToast();
+  const { apiKey, apiKeySaved } = useGeminiAPI();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [customInstructions, setCustomInstructions] = useState('');
   const [topicInstructions, setTopicInstructions] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [apiKey, setApiKey] = useState('');
-  const [apiKeySaved, setApiKeySaved] = useState(false);
-  const [isLoadingApiKey, setIsLoadingApiKey] = useState(false);
   const [topic, setTopic] = useState('');
   const [difficultyLevel, setDifficultyLevel] = useState('medium');
   const [numberOfQuestions, setNumberOfQuestions] = useState(10);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number | null>(null);
-  const [useAllFiles, setUseAllFiles] = useState(true);
-  // Load saved API key on component mount and when user changes
-  useEffect(() => {
-    const loadApiKey = async () => {
-      if (!user && !isGuest) {
-        setApiKey('');
-        setApiKeySaved(false);
-        return;
-      }
-
-      setIsLoadingApiKey(true);
-      try {
-        let savedApiKey;
-        if (isGuest) {
-          // For guest mode, use localStorage
-          savedApiKey = localStorage.getItem('gemini_api_key');
-        } else {
-          // For authenticated users, use Supabase
-          savedApiKey = await supabaseSecureStorage.getApiKey();
-        }
-        
-        if (savedApiKey) {
-          setApiKey(savedApiKey);
-          setApiKeySaved(true);
-        } else {
-          setApiKey('');
-          setApiKeySaved(false);
-        }
-      } catch (error) {
-        console.error('Error loading API key:', error);
-        setApiKey('');
-        setApiKeySaved(false);
-      } finally {
-        setIsLoadingApiKey(false);
-      }
-    };
-
-    loadApiKey();
-  }, [user, isGuest]);
-  // Save API key to Supabase or localStorage
-  const saveApiKey = async () => {
-    if (!user && !isGuest) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in or continue as guest to save your API key.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!apiKey.trim()) {
-      toast({
-        title: "Invalid API Key",
-        description: "Please enter a valid API key.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoadingApiKey(true);
-    try {
-      if (isGuest) {
-        // For guest mode, save to localStorage
-        localStorage.setItem('gemini_api_key', apiKey.trim());
-        setApiKeySaved(true);
-        toast({
-          title: "API Key Saved",
-          description: "Your API key has been saved locally in your browser.",
-        });
-      } else {
-        // For authenticated users, save to Supabase
-        const result = await supabaseSecureStorage.storeApiKey(apiKey.trim());
-        if (result.success) {
-          setApiKeySaved(true);
-          toast({
-            title: "API Key Saved",
-            description: "Your API key has been saved securely.",
-          });
-        } else {
-          console.error('Failed to save API key:', result.error);
-          toast({
-            title: "Save Failed",
-            description: result.error || "Failed to save API key.",
-            variant: "destructive",
-          });
-        }
-      }
-    } catch (error) {
-      console.error('Error saving API key:', error);
-      toast({
-        title: "Save Failed",
-        description: "An unexpected error occurred while saving your API key.",
-        variant: "destructive",
-      });    } finally {
-      setIsLoadingApiKey(false);
-    }
-  };
+  const [useAllFiles, setUseAllFiles] = useState(true);  // Load saved API key on component mount and when user changes
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -427,12 +329,8 @@ Follow these guidelines:
       });
     } finally {
       setIsLoading(false);
-    }
-  };
+    }  };
   // Function to save API key securely
-  const handleSaveApiKey = async () => {
-    await saveApiKey();
-  };
   
   const handleStartQuiz = () => {
     if (questions.length === 0) {
@@ -458,8 +356,7 @@ Follow these guidelines:
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in">      
       <h2 className="text-xl sm:text-2xl font-semibold text-center text-foreground">Create Quiz with Google AI</h2>      
-        <Tabs defaultValue="upload" className="w-full">        
-        <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="upload" className="w-full">          <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="upload" className="flex items-center justify-center gap-1 sm:gap-2">
             <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Upload Documents</span>
@@ -469,11 +366,6 @@ Follow these guidelines:
             <BrainCircuit className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Create by Topic</span>
             <span className="sm:hidden">Topic</span>
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="flex items-center justify-center gap-1 sm:gap-2">
-            <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">API Settings</span>
-            <span className="sm:hidden">Settings</span>
           </TabsTrigger>
         </TabsList>
         
@@ -731,81 +623,18 @@ Follow these guidelines:
                   Start Quiz {questions.length > 0 ? `(${questions.length})` : ''}
                 </>
               )}
-            </Button>
-          </div>
+            </Button>          </div>
         </TabsContent>
         
-        <TabsContent value="settings">
-          <Card>
-            <CardHeader className="p-4 sm:p-6">
-              <CardTitle className="text-base sm:text-lg">API Settings</CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                Configure your Google AI (Gemini) settings
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
-              <div className="space-y-2">
-                <label htmlFor="apiKey" className="text-xs sm:text-sm font-medium">
-                  Google AI API Key
-                </label>
-                <Input
-                  id="apiKey"
-                  type="password"
-                  placeholder="Enter your Google AI API key"
-                  value={apiKey}
-                  onChange={(e) => {
-                    setApiKey(e.target.value);
-                    setApiKeySaved(false);
-                  }}
-                  className="text-xs sm:text-sm h-8 sm:h-10"
-                />                  <p className="text-xs text-muted-foreground">
-                  <Info className="inline-block h-3 w-3 mr-1" />
-                  {user ? 
-                    "Your API key is stored securely in Supabase with encryption" :
-                    "Sign in to store your API key securely in the cloud"
-                  }
-                </p>
-                <Button
-                  onClick={handleSaveApiKey}
-                  className="mt-2 text-xs sm:text-sm h-8 sm:h-10"
-                  variant="secondary"
-                  disabled={!apiKey.trim() || apiKeySaved || isLoadingApiKey || (!user && !isGuest)}
-                >
-                  {isLoadingApiKey ? (
-                    <>
-                      <Loader2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : apiKeySaved ? (
-                    <>
-                      <Check className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                      API Key Saved
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                      {(user || isGuest) ? "Save API Key" : "Sign In Required"}
-                    </>
-                  )}
-                </Button>
-              </div>
-              
-              <Alert className="bg-muted/50 p-2 sm:p-4 mt-2">
-                <Info className="h-3 w-3 sm:h-4 sm:w-4" />
-                <AlertTitle className="text-xs sm:text-sm">How to get a Google AI API Key</AlertTitle>
-                <AlertDescription className="text-xs">
-                  <ol className="list-decimal pl-4 mt-1 space-y-1">
-                    <li>Go to <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google AI Studio</a></li>
-                    <li>Sign in with your Google account</li>
-                    <li>Navigate to "Get API key" from the top menu</li>
-                    <li>Create a new API key and copy it</li>
-                    <li>Paste it here and click "Save API Key"</li>
-                  </ol>
-                </AlertDescription>
-              </Alert>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        {/* Alert about API settings */}
+        {!apiKeySaved && (
+          <Alert className="mt-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+            <Info className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+            <AlertDescription className="text-amber-800 dark:text-amber-200">
+              <strong>API Key Required:</strong> Please configure your Google AI API key in the Settings menu (gear icon in the top right) to enable AI-powered quiz generation.
+            </AlertDescription>
+          </Alert>
+        )}
       </Tabs>
     </div>
   );
