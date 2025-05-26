@@ -158,19 +158,18 @@ const QuizApp = () => {
         currentView={currentView}
       />
       
-      <Card className="w-full max-w-5xl shadow-2xl overflow-hidden backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-0 relative z-10">        <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white border-0 p-3 md:p-8 mobile-card-header">
-          <CardTitle className="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight flex items-center justify-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-white/20 rounded-lg flex items-center justify-center relative header-icon">
+      <Card className="w-full max-w-5xl shadow-2xl overflow-hidden backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-0 relative z-10"><CardHeader className="text-center bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white border-0 p-6 md:p-8">
+          <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight flex items-center justify-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center relative">
               <div className="absolute inset-0 bg-white/10 rounded-lg transform rotate-3"></div>
-              <div className="relative z-10 text-white text-base md:text-lg font-black">Q</div>
+              <div className="relative z-10 text-white text-lg font-black">Q</div>
             </div>
-            <span className="hidden sm:inline">MCQ Quiz Taker</span>
-            <span className="sm:hidden">Quiz Taker</span>
+            MCQ Quiz Taker
           </CardTitle>
-          <p className="text-blue-50 mt-2 text-sm md:text-base lg:text-lg font-medium hidden md:block">
+          <p className="text-blue-50 mt-2 text-sm sm:text-base md:text-lg font-medium">
             Craft and conquer your custom quizzes with AI power!
           </p>
-        </CardHeader><CardContent className="p-4 sm:p-6 md:p-8">
+        </CardHeader>        <CardContent className="p-4 sm:p-6 md:p-8">
           {showHistory ? (
             <QuizHistory onCloseHistory={() => setShowHistory(false)} />
           ) : showFlashcardHistory ? (

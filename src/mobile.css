@@ -23,27 +23,7 @@
 }
 
 /* Mobile touch improvements */
-@media (max-width: 768px) {  /* Mobile header optimizations */
-  .mobile-header-slim {
-    padding: 0.75rem 1rem !important;
-    min-height: 3rem;
-  }
-  
-  .mobile-header-slim h1 {
-    font-size: 1.25rem !important;
-    line-height: 1.3 !important;
-  }
-  
-  .mobile-header-slim .header-icon {
-    width: 2rem !important;
-    height: 2rem !important;
-  }
-  
-  /* Compact card header */
-  .mobile-card-header {
-    padding: 0.75rem 1rem !important;
-  }
-  
+@media (max-width: 768px) {
   /* Larger touch targets for mobile */
   button, 
   [role="button"],
