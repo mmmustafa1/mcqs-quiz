@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, History, X, Settings, Edit2, Lock, LogOut, LogIn } from 'lucide-react';
+import { Menu, History, X, Settings, Edit2, Lock, LogOut, LogIn, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
@@ -11,20 +11,30 @@ import { useAuth } from '@/contexts/AuthContext';
 interface MobileNavToggleProps {
   onShowHistory?: () => void;
   showHistoryButton?: boolean;
+  onShowFlashcardHistory?: () => void;
+  showFlashcardHistoryButton?: boolean;
   onOpenSettings?: () => void;
 }
 
 const MobileNavToggle: React.FC<MobileNavToggleProps> = ({ 
   onShowHistory,
   showHistoryButton = false,
+  onShowFlashcardHistory,
+  showFlashcardHistoryButton = false,
   onOpenSettings
 }) => {
   const [open, setOpen] = useState(false);
   const { user, isGuest, signOut, exitGuestMode, guestDisplayName, profile } = useAuth();
-
   const handleHistoryClick = () => {
     if (onShowHistory) {
       onShowHistory();
+      setOpen(false);
+    }
+  };
+
+  const handleFlashcardHistoryClick = () => {
+    if (onShowFlashcardHistory) {
+      onShowFlashcardHistory();
       setOpen(false);
     }
   };
@@ -34,7 +44,7 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
       onOpenSettings();
       setOpen(false);
     }
-  };  return (
+  };return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild className="md:hidden absolute top-4 left-4 z-50">
         <Button variant="ghost" size="icon" className="glass-card hover:bg-white/20 dark:hover:bg-gray-800/20">
@@ -156,8 +166,7 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
               <Settings className="h-5 w-5 mr-3 text-blue-600 dark:text-blue-400" />
               <span className="font-medium">Settings</span>
             </Button>
-            
-            {showHistoryButton && (
+              {showHistoryButton && (
               <Button 
                 variant="ghost" 
                 onClick={handleHistoryClick}
@@ -165,6 +174,17 @@ const MobileNavToggle: React.FC<MobileNavToggleProps> = ({
               >
                 <History className="h-5 w-5 mr-3 text-purple-600 dark:text-purple-400" />
                 <span className="font-medium">View Quiz History</span>
+              </Button>
+            )}
+            
+            {showFlashcardHistoryButton && (
+              <Button 
+                variant="ghost" 
+                onClick={handleFlashcardHistoryClick}
+                className="w-full justify-start h-12 px-4 hover:bg-green-50 dark:hover:bg-green-900/20 text-left"
+              >
+                <Layers className="h-5 w-5 mr-3 text-green-600 dark:text-green-400" />
+                <span className="font-medium">View Flashcard History</span>
               </Button>
             )}
           </div>

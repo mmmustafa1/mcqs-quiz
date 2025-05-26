@@ -225,7 +225,7 @@ const GeminiAI = () => {
       
       // Configure the model
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-pro-exp-03-25",
+      model: "gemini-2.5-flash-preview-05-20",
       safetySettings: [
         {
         category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -356,7 +356,7 @@ Follow these guidelines:
       
       // Configure the model
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.5-pro-exp-03-25",
+        model: "gemini-2.5-flash-preview-05-20",
         safetySettings: [
             {
                 category: HarmCategory.HARM_CATEGORY_HARASSMENT,

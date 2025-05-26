@@ -1,12 +1,15 @@
 
 import React from 'react';
 import { QuizProvider } from '@/contexts/QuizContext';
+import { FlashcardProvider } from '@/contexts/FlashcardContext';
 import QuizApp from '@/components/QuizApp';
 
 const Index = () => {
   return (
     <QuizProvider>
-      <QuizApp />
+      <FlashcardProvider>
+        <QuizApp />
+      </FlashcardProvider>
     </QuizProvider>
   );
 };
