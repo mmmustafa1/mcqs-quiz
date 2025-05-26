@@ -7,17 +7,17 @@ export const useGeminiAPI = () => {
   const [apiKey, setApiKey] = useState('');
   const [apiKeySaved, setApiKeySaved] = useState(false);
   const [isLoadingApiKey, setIsLoadingApiKey] = useState(false);
-
-  // Load saved API key on component mount and when user changes
+  const [isInitialLoading, setIsInitialLoading] = useState(true);  // Load saved API key on component mount and when user changes
   useEffect(() => {
     const loadApiKey = async () => {
       if (!user && !isGuest) {
         setApiKey('');
         setApiKeySaved(false);
+        setIsInitialLoading(false);
         return;
       }
 
-      setIsLoadingApiKey(true);
+      // Only set loading state to true when explicitly saving, not during initial load
       try {
         let savedApiKey;
         if (isGuest) {
@@ -40,7 +40,7 @@ export const useGeminiAPI = () => {
         setApiKey('');
         setApiKeySaved(false);
       } finally {
-        setIsLoadingApiKey(false);
+        setIsInitialLoading(false);
       }
     };
 
@@ -79,13 +79,13 @@ export const useGeminiAPI = () => {
       setIsLoadingApiKey(false);
     }
   };
-
   return {
     apiKey,
     setApiKey,
     apiKeySaved,
     setApiKeySaved,
     isLoadingApiKey,
+    isInitialLoading,
     saveApiKey,
   };
 };

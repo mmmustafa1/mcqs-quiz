@@ -17,7 +17,7 @@ import { useGeminiAPI } from '@/hooks/useGeminiAPI';
 const FlashcardGenerator = () => {  const { addGeneratedDeck, isGenerating, setIsGenerating } = useFlashcard();
   const { user, isGuest } = useAuth();
   const { toast } = useToast();
-  const { apiKey, setApiKey, apiKeySaved, isLoadingApiKey, saveApiKey } = useGeminiAPI();
+  const { apiKey, setApiKey, apiKeySaved, isLoadingApiKey, isInitialLoading, saveApiKey } = useGeminiAPI();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // State
@@ -205,11 +205,10 @@ const FlashcardGenerator = () => {  const { addGeneratedDeck, isGenerating, setI
         variant: "destructive",
       });
     } finally {
-      setIsGenerating(false);
-    }
+      setIsGenerating(false);    }
   };
-
-  if (!apiKeySaved) {
+  // Only show API key required screen if we've finished loading and confirmed no saved key
+  if (!isInitialLoading && !apiKeySaved) {
     return (
       <div className="space-y-6">
         <Card>
