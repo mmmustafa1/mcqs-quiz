@@ -17,6 +17,8 @@ import QuizHistory from './QuizHistory';
 import FlashcardHistory from './FlashcardHistory';
 import ThemeToggle from './ThemeToggle';
 import MobileNavToggle from './MobileNavToggle';
+import MobileBottomNav from './MobileBottomNav';
+import MobileSidebar from './MobileSidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,10 +28,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 const QuizApp = () => {
   const { quizStarted, quizFinished, questions } = useQuiz();
   const { currentDeck, isStudying } = useFlashcard();
-  const { user, loading, isGuest, continueAsGuest } = useAuth();  const [showHistory, setShowHistory] = useState(false);
+  const { user, loading, isGuest, continueAsGuest } = useAuth();
+  
+  const [showHistory, setShowHistory] = useState(false);
   const [showFlashcardHistory, setShowFlashcardHistory] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'home' | 'flashcards'>('home');
+  const [currentTab, setCurrentTab] = useState<'manual' | 'ai' | 'flashcards'>('manual');
   // Log the state to help debug
   useEffect(() => {
     console.log("App state:", { 
@@ -41,13 +46,12 @@ const QuizApp = () => {
       currentView
     });
   }, [quizStarted, quizFinished, questions, currentDeck, isStudying, currentView]);
-
   // Auto-switch to flashcards view when a deck is generated
   useEffect(() => {
-    if (currentDeck && currentView === 'home') {
+    if (currentDeck && currentView === 'home' && currentTab === 'flashcards') {
       setCurrentView('flashcards');
     }
-  }, [currentDeck, currentView]);
+  }, [currentDeck, currentView, currentTab]);
 
   // Show loading spinner while checking authentication
   if (loading) {
@@ -126,8 +130,9 @@ const QuizApp = () => {
         </footer>
       </div>
     );
-  }return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 transition-all duration-300 relative">      <div className="absolute inset-0 opacity-30">
+  }  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 transition-all duration-300 relative pb-20 md:pb-4">
+      <div className="absolute inset-0 opacity-30">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-100/50 to-purple-100/50 dark:from-blue-900/30 dark:to-purple-900/30"></div>
         <div className="absolute inset-0 pattern-dots"></div>
       </div>      
@@ -144,15 +149,16 @@ const QuizApp = () => {
         </Button>
         <ThemeToggle />
       </div>
-        <MobileNavToggle 
+      
+      {/* Mobile Sidebar - replaces MobileNavToggle */}
+      <MobileSidebar 
         onShowHistory={() => setShowHistory(true)} 
-        showHistoryButton={!showHistory && !showFlashcardHistory && !quizStarted && !quizFinished && currentView === 'home'}
         onShowFlashcardHistory={() => setShowFlashcardHistory(true)}
-        showFlashcardHistoryButton={!showHistory && !showFlashcardHistory && !quizStarted && !quizFinished && currentView === 'flashcards'}
         onOpenSettings={() => setSettingsOpen(true)}
+        currentView={currentView}
       />
       
-      <Card className="w-full max-w-5xl shadow-2xl overflow-hidden backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-0 relative z-10">        <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white border-0 p-6 md:p-8">
+      <Card className="w-full max-w-5xl shadow-2xl overflow-hidden backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-0 relative z-10"><CardHeader className="text-center bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white border-0 p-6 md:p-8">
           <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight flex items-center justify-center gap-3">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center relative">
               <div className="absolute inset-0 bg-white/10 rounded-lg transform rotate-3"></div>
@@ -200,10 +206,12 @@ const QuizApp = () => {
               </div>
             </div>
           ) : (
-            <>
-              {!quizStarted && !quizFinished && (
-                <div className="space-y-4 sm:space-y-6">                  <Tabs defaultValue="manual" className="w-full">
-                    <TabsList className="tabs-enhanced grid w-full grid-cols-3 mb-6 h-12">                      <TabsTrigger value="manual" className="tab-trigger-enhanced flex items-center justify-center gap-2 text-sm font-medium transition-all duration-200 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400">
+            <>              {!quizStarted && !quizFinished && (
+                <div className="space-y-4 sm:space-y-6">
+                  {/* Desktop Tabs */}
+                  <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as 'manual' | 'ai' | 'flashcards')} className="w-full hidden md:block">
+                    <TabsList className="tabs-enhanced grid w-full grid-cols-3 mb-6 h-12">
+                      <TabsTrigger value="manual" className="tab-trigger-enhanced flex items-center justify-center gap-2 text-sm font-medium transition-all duration-200 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400">
                         <FileText className="h-4 w-4" />
                         <span>Manual Input</span>
                       </TabsTrigger>
@@ -225,7 +233,14 @@ const QuizApp = () => {
                     <TabsContent value="flashcards">
                       <FlashcardGenerator />
                     </TabsContent>
-                  </Tabs>                    {/* View History Buttons - only show on tablet/desktop */}
+                  </Tabs>
+                  
+                  {/* Mobile Content - no tabs, direct content based on currentTab */}
+                  <div className="md:hidden">
+                    {currentTab === 'manual' && <QuizInput />}
+                    {currentTab === 'ai' && <GeminiAI />}
+                    {currentTab === 'flashcards' && <FlashcardGenerator />}
+                  </div>{/* View History Buttons - only show on tablet/desktop */}
                   <div className="hidden md:flex justify-center gap-4 pt-6">
                     <Button 
                       variant="outline" 
@@ -251,12 +266,21 @@ const QuizApp = () => {
 
               {quizFinished && <QuizResults />}
             </>
-          )}
-        </CardContent>
+          )}        </CardContent>
       </Card>
+        {/* Mobile Bottom Navigation */}
+      <MobileBottomNav 
+        currentView={currentView}
+        currentTab={currentTab}
+        onViewChange={setCurrentView}
+        onTabChange={setCurrentTab}
+        onOpenSettings={() => setSettingsOpen(true)}
+        isQuizActive={quizStarted || quizFinished || isStudying || showHistory || showFlashcardHistory}
+      />
+      
       <footer className="mt-4 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground">
         <p>© {new Date().getFullYear()} Made with ❤️ by MMM</p>
-      </footer>      {/* Settings Dialog */}
+      </footer>{/* Settings Dialog */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
